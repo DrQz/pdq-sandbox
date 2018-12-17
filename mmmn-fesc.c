@@ -12,7 +12,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include "../lib/PDQ_Lib.h"
+#include "../pdq-qnm-pkg/lib/PDQ_Lib.h"
 
 #define MAX_USERS 500  //needed for tomcat model
 
