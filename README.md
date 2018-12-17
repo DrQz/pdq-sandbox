@@ -1,2 +1,4 @@
 # pdq-sandbox
-PDQ isolated development
+
+Isolation repo for PDQ code development
+
