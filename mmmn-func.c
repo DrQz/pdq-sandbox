@@ -1,7 +1,7 @@
 /* 
 	mmmn-func.c
 	
-	C function form of FESC code: mmmn-fesc.c
+	C function MVA form of FESC code: mmmn-fesc.c
 	
 	Prototype code for eventual inclusion in PDQ lib
 	which will be called: PDQ_CreateMultiClosed
@@ -19,6 +19,7 @@
 //#include "../pdq-qnm-pkg/lib/PDQ_Lib.h"  Not needed here
 
 
+//***************** GLOBALS ******************
 #define MAX_USERS 600  // 500 for AWS-Tomcat model
 
 
@@ -38,6 +39,9 @@ double          sm_x[MAX_USERS + 1]; // submodel thruput
 char            glob_wrkname[15];
 char            glob_devname[15];
 
+//********************************************
+
+
 
 int main(void) {
 
@@ -46,13 +50,15 @@ int main(void) {
 	int FCFS = 8;
 	int TERM = 11;
 	
-	void CreateClosed(char *name, int wtype, float users, float think);
+	// Emulate PDQ declarations
+	void CreateClosed(char *name, int wtype, int users, float think);
 	void CreateMultiClosed(int servers, char *name, int device, int scheds);
 	void SetDemand(char *nodename, char *workname, float servicetime);
 	void SolveFESC();
 	void PrintResults();
 
-	CreateClosed("Requests", TERM, 500, 1e-9);
+
+	CreateClosed("Requests", TERM, 500, 0);
 	CreateMultiClosed(350, "funcFESC", CEN, FCFS);
 	SetDemand("funcFESC", "Requests", 0.4442); // do this first in this mock code
 	SolveFESC();
@@ -62,8 +68,16 @@ int main(void) {
 
 
 
-void CreateClosed(char *name, int wtype, float users, float think) {
+void CreateClosed(char *name, int wtype, int users, float think) {
 // Dummy function to emulate creating a CLOSED workload
+// Extension of CreateClosed func args: char *name, int TERM, float users, float think
+
+    // 'users' must be an int since it defines matrix dimensions
+	if (users > MAX_USERS) {
+		printf("N=%d cannot be greater than %d\n", users, MAX_USERS);
+		exit(-1);		
+	}
+
 
     // wtype not used here
 	glob_N = users;
@@ -93,12 +107,9 @@ void SetDemand(char *nodename, char *workname, float servicetime) {
 
 
 
-// This function well goes into PDQ_Build.c
-// Solution code can go into PDQ_MServer.c (where the erlang code is also)
-// Extension of CreateClosed func args: char *name, int TERM, float users, float think
 
 void SolveFESC() {
-// This code has the same logical footing as ErlangR() in PDQ_MServer.c
+// This code is on the same logical footing as ErlangR() in PDQ_MServer.c
 
     // local version of PDQ globals
     int             m;
@@ -110,38 +121,27 @@ void SolveFESC() {
 	double          X;
 	double          U;
 
-	// internal vars
+	// internal counters
 	int             i;
 	int             j;
 	int             n;
 	int             ii, jj;
 	int             nn;
-	float           qlength;
 
+    // Subroutine declaration
 	void            SubModel(int pop, int servers, float demand);
 
 
-    // In this M/M/m/N/N fesc model the submodel is just a delay center
+    // In this M/M/m/N/N FESC the submodel is just a delay center
     // Hence, 'pq' is an array of 1s and 0s due to no waiting line in submodel
-    // dimension is MAX_USERS + 1, e.g., 500 + 1 = 0, 1..500
+    // dimension is MAX_USERS + 1, e.g., 10 + 1 = 0,1,2,..10
     float           pq[MAX_USERS + 1][MAX_USERS + 1]; 
     
-    // Get globals as inputs
+    // Get the global params
     D = glob_D;
     N = glob_N;
     Z = glob_Z;
     m = glob_m;
-
-	if (N > MAX_USERS) {
-		printf("N=%d cannot be greater than %d\n", N, MAX_USERS);
-		exit(-1);		
-	}
-
-	if (Z == 0) {
-		printf("Z=%.2f can have any tiny value but not ZERO\n", Z);
-		exit(-1);		
-	}
-
 
 	// init matrix to all zeros 
 	for (i = 0; i <= N; i++) {
