@@ -20,60 +20,99 @@
 #define MAX_USERS 500  //needed for tomcat model
 
 
-// Globals
-int             N;      // number of customers
-int             m;      // number of servers
-float           D;      // service demand 
-float           Z;      // think time
+// Globals - these will be set by calling a PDQ_CreateClosed workload
+int             glob_N;      // number of customers
+int             glob_m;      // number of servers
+float           glob_D;      // service demand 
+float           glob_Z;      // think time
 
 double          sm_x[MAX_USERS + 1]; // submodel thruput
-double          R;      // residence time 
-double          Q;      // no. customers 
-double          X;      // mean thruput
-double          U;      // total utilization
+double          glob_R;      // residence time 
+double          glob_Q;      // no. customers 
+double          glob_X;      // mean thruput
+double          glob_U;      // total utilization
 
 
 int main(void) {
-	void MmmnFunc(char *name, float users, float think, int servers);
 
-	// These params will come from setting up PDQ functions
-	float users = 500;
-	float think = 1e-9;  // Z = zero 
-	int servers = 350;
+	// from PDQ lib types
+	int CEN  = 4;
+	int FCFS = 8;
+	int TERM = 11;
 	
-	MmmnFunc("newFunc", users, think, servers);
+	void CreateClosed(char *name, int wtype, float users, float think);
+	void SetDemand(char *nodename, char *workname, float servicetime);
+	void MmmnFunc(int servers, char *name, int device, int sched);
 
-}
+	CreateClosed("Requests", TERM, 500, 1e-9);
+	SetDemand("funcFESC", "Requests", 0.45); // need to do this first, for this prototype
+	MmmnFunc(350, "funcFESC", CEN, FCFS);
+
+} // main
+
+
+
+// Dummy function to emulate creating a CLOSED workload
+void CreateClosed(char *name, int wtype, float users, float think) {
+
+	glob_N = users;
+	glob_Z = think;
+	
+} // end CreateClosed
+
+
+
+// Dummy function to emulate setting service time of FESC
+void SetDemand(char *nodename, char *workname, float servicetime) {
+
+	glob_D = servicetime;
+	
+} // end CreateClosed
+
 
 
 // This function well goes into PDQ_Build.c
 // Solution code can go into PDQ_MServer.c (where the erlang code is also)
 // Extension of CreateClosed func args: char *name, int TERM, float users, float think
 
-void MmmnFunc(char *name, float users, float think, int servers) {
+void MmmnFunc(int servers, char *name, int device, int sched) {
 
+    // internal version of PDQ params
+    int             m;
+    int             N;
+    double          Z;
+    double          D;
+    double          R;
+	double          Q;
+	double          X;
+	double          U;
+
+	// internal vars
 	int             i;
 	int             j;
     int             n;
     int             ii, jj;
     int             nn;
     float           qlength;
-	
+
     void            sub_model(int pop, int servers, float demand);
     void            print_results();
+
     
     // In this M/M/m/N/N fesc model the submodel is just a delay center
     // Hence, 'pq' is an array of 1s and 0s due to no waiting line in submodel
     // dimension is MAX_USERS + 1, e.g., 500 + 1 = 0, 1..500
-    float             pq[MAX_USERS + 1][MAX_USERS + 1]; 
+    float           pq[MAX_USERS + 1][MAX_USERS + 1]; 
 
+    glob_m = servers; // local param
     
-    m = servers;
-    D = 0.45;
-    N = users;
-    Z = think;
+    // Get globals as inputs
+    D = glob_D;
+    N = glob_N;
+    Z = glob_Z;
+    m = glob_m;
 
-	if (N > 500) {
+	if (N > MAX_USERS) {
         printf("N=%d cannot be greater than %d\n", N, MAX_USERS);
         exit(-1);		
 	}
@@ -95,7 +134,6 @@ void MmmnFunc(char *name, float users, float think, int servers) {
 
 	// Solve the submodel
     sub_model(N, m, D);
-
 
 
 	// Solve the composite model ...
@@ -133,10 +171,18 @@ void MmmnFunc(char *name, float users, float think, int servers) {
 
     U = X * D;
 
+	// Update globals
+	glob_R = R;      
+	glob_Q = Q;      
+	glob_X = X;  
+	glob_U = U; 
+
     print_results();
     
     
-} // MmmnFunc
+} // end  of MmmnFunc
+
+
 
 
 void sub_model(int pop, int servers, float demand) {
@@ -156,23 +202,23 @@ void sub_model(int pop, int servers, float demand) {
 
 void print_results() {
 	printf("\n");
-	printf("  M/M/%d/%d/%d repairmen FESC model\n", m, N, N);
+	printf("  M/M/%d/%d/%d repairmen FESC model\n", glob_m, glob_N, glob_N);
 	printf("  ---------------------------------\n");
-	printf("  Machine pop:      %14d\n", N);
- 	printf("  No. repairmen:    %14d\n", m);
-	printf("  MT to failure:    %14g\n", Z);
-	printf("  Service time:     %14.4f\n", D);
-	printf("  Breakage rate:    %14.4g\n", 1 / Z);
-	printf("  Service rate:     %14.4f\n", 1 / D);
-	printf("  Utilization:      %14.4f\n", U);
-	printf("  Per Server:       %14.4f\n", U / m);
+	printf("  Machine pop:      %14d\n", glob_N);
+ 	printf("  No. repairmen:    %14d\n", glob_m);
+	printf("  MT to failure:    %14g\n", glob_Z);
+	printf("  Service time:     %14.4f\n", glob_D);
+	printf("  Breakage rate:    %14.4g\n", 1 / glob_Z);
+	printf("  Service rate:     %14.4f\n", 1 / glob_D);
+	printf("  Utilization:      %14.4f\n", glob_U);
+	printf("  Per Server:       %14.4f\n", glob_U / glob_m);
 	printf("  \n");
-	printf("  No. in system:    %14.4f\n", Q);
-	printf("  No in service:    %14.4f\n", U);
-	printf("  No.  enqueued:    %14.4f\n", Q - U);
-	printf("  Waiting time:     %14.4f\n", R - D);
-	printf("  Throughput:       %14.4f\n", X);
-	printf("  Response time:    %14.4f\n", R);
-	printf("  Stretch factor:   %14.4f\n", R / D);
+	printf("  No. in system:    %14.4f\n", glob_Q);
+	printf("  No in service:    %14.4f\n", glob_U);
+	printf("  No.  enqueued:    %14.4f\n", glob_Q - glob_U);
+	printf("  Waiting time:     %14.4f\n", glob_R - glob_D);
+	printf("  Throughput:       %14.4f\n", glob_X);
+	printf("  Response time:    %14.4f\n", glob_R);
+	printf("  Stretch factor:   %14.4f\n", glob_R / glob_D);
 }
 
