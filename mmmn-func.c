@@ -54,7 +54,7 @@ int main(void) {
 
 	CreateClosed("Requests", TERM, 500, 1e-9);
 	CreateMultiClosed(350, "funcFESC", CEN, FCFS);
-	SetDemand("funcFESC", "Requests", 0.45); // do this first in this mock code
+	SetDemand("funcFESC", "Requests", 0.4442); // do this first in this mock code
 	SolveFESC();
 	PrintResults();
 	
@@ -65,6 +65,7 @@ int main(void) {
 void CreateClosed(char *name, int wtype, float users, float think) {
 // Dummy function to emulate creating a CLOSED workload
 
+    // wtype not used here
 	glob_N = users;
 	glob_Z = think;
 	strcpy(glob_wrkname, name);
@@ -75,6 +76,7 @@ void CreateClosed(char *name, int wtype, float users, float think) {
 
 void CreateMultiClosed(int servers, char *name, int device, int sched) {
     
+    // device and sched not used here
     glob_m = servers; // local param
     strcpy(glob_devname, name);
 
@@ -96,6 +98,7 @@ void SetDemand(char *nodename, char *workname, float servicetime) {
 // Extension of CreateClosed func args: char *name, int TERM, float users, float think
 
 void SolveFESC() {
+// This code has the same logical footing as ErlangR() in PDQ_MServer.c
 
     // local version of PDQ globals
     int             m;
@@ -115,8 +118,8 @@ void SolveFESC() {
 	int             nn;
 	float           qlength;
 
-    void            SubModel(int pop, int servers, float demand);
-    //void            print_results();
+	void            SubModel(int pop, int servers, float demand);
+
 
     // In this M/M/m/N/N fesc model the submodel is just a delay center
     // Hence, 'pq' is an array of 1s and 0s due to no waiting line in submodel
@@ -185,13 +188,13 @@ void SolveFESC() {
         }
     }
 
-    U = X * D;
+	U = X * D;
 
 	// Update globals
-	glob_R = R;      
-	glob_Q = Q;      
-	glob_X = X;  
-	glob_U = U; 
+	glob_R = R;
+	glob_Q = Q;
+	glob_X = X;
+	glob_U = U;
 
 } // end  of MmmnFunc
 
