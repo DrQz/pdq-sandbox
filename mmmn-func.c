@@ -9,15 +9,17 @@
 	will be renamed PDQ_CreateMultiOpen()
 	
 	Created by NJG on Sunday, December 17, 2017
-	Updated by NJG on Sunday, December 16, 2018
+	Revised by NJG on Sunday, December 16, 2018
 */
 
+#include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 //#include "../pdq-qnm-pkg/lib/PDQ_Lib.h"  Not needed here
 
-#define MAX_USERS 500  //needed for tomcat model
+
+#define MAX_USERS 600  // 500 for AWS-Tomcat model
 
 
 // Globals - these will be set by calling a PDQ_CreateClosed workload
@@ -26,44 +28,62 @@ int             glob_m;      // number of servers
 float           glob_D;      // service demand 
 float           glob_Z;      // think time
 
-double          sm_x[MAX_USERS + 1]; // submodel thruput
 double          glob_R;      // residence time 
 double          glob_Q;      // no. customers 
 double          glob_X;      // mean thruput
 double          glob_U;      // total utilization
 
+double          sm_x[MAX_USERS + 1]; // submodel thruput
+
+char            glob_wrkname[15];
+char            glob_devname[15];
+
 
 int main(void) {
 
-	// from PDQ lib types
+	// IDs from PDQ lib types
 	int CEN  = 4;
 	int FCFS = 8;
 	int TERM = 11;
 	
 	void CreateClosed(char *name, int wtype, float users, float think);
+	void CreateMultiClosed(int servers, char *name, int device, int scheds);
 	void SetDemand(char *nodename, char *workname, float servicetime);
-	void MmmnFunc(int servers, char *name, int device, int sched);
+	void SolveFESC();
+	void PrintResults();
 
 	CreateClosed("Requests", TERM, 500, 1e-9);
-	SetDemand("funcFESC", "Requests", 0.45); // need to do this first, for this prototype
-	MmmnFunc(350, "funcFESC", CEN, FCFS);
-
+	CreateMultiClosed(350, "funcFESC", CEN, FCFS);
+	SetDemand("funcFESC", "Requests", 0.45); // do this first in this mock code
+	SolveFESC();
+	PrintResults();
+	
 } // main
 
 
 
-// Dummy function to emulate creating a CLOSED workload
 void CreateClosed(char *name, int wtype, float users, float think) {
+// Dummy function to emulate creating a CLOSED workload
 
 	glob_N = users;
 	glob_Z = think;
+	strcpy(glob_wrkname, name);
 	
 } // end CreateClosed
 
 
 
-// Dummy function to emulate setting service time of FESC
+void CreateMultiClosed(int servers, char *name, int device, int sched) {
+    
+    glob_m = servers; // local param
+    strcpy(glob_devname, name);
+
+}
+
+
+
 void SetDemand(char *nodename, char *workname, float servicetime) {
+// Dummy function to emulate setting service time of FESC
 
 	glob_D = servicetime;
 	
@@ -75,9 +95,9 @@ void SetDemand(char *nodename, char *workname, float servicetime) {
 // Solution code can go into PDQ_MServer.c (where the erlang code is also)
 // Extension of CreateClosed func args: char *name, int TERM, float users, float think
 
-void MmmnFunc(int servers, char *name, int device, int sched) {
+void SolveFESC() {
 
-    // internal version of PDQ params
+    // local version of PDQ globals
     int             m;
     int             N;
     double          Z;
@@ -90,21 +110,18 @@ void MmmnFunc(int servers, char *name, int device, int sched) {
 	// internal vars
 	int             i;
 	int             j;
-    int             n;
-    int             ii, jj;
-    int             nn;
-    float           qlength;
+	int             n;
+	int             ii, jj;
+	int             nn;
+	float           qlength;
 
-    void            sub_model(int pop, int servers, float demand);
-    void            print_results();
+    void            SubModel(int pop, int servers, float demand);
+    //void            print_results();
 
-    
     // In this M/M/m/N/N fesc model the submodel is just a delay center
     // Hence, 'pq' is an array of 1s and 0s due to no waiting line in submodel
     // dimension is MAX_USERS + 1, e.g., 500 + 1 = 0, 1..500
     float           pq[MAX_USERS + 1][MAX_USERS + 1]; 
-
-    glob_m = servers; // local param
     
     // Get globals as inputs
     D = glob_D;
@@ -113,13 +130,13 @@ void MmmnFunc(int servers, char *name, int device, int sched) {
     m = glob_m;
 
 	if (N > MAX_USERS) {
-        printf("N=%d cannot be greater than %d\n", N, MAX_USERS);
-        exit(-1);		
+		printf("N=%d cannot be greater than %d\n", N, MAX_USERS);
+		exit(-1);		
 	}
 
 	if (Z == 0) {
-        printf("Z=%.2f can have any tiny value but not ZERO\n", Z);
-        exit(-1);		
+		printf("Z=%.2f can have any tiny value but not ZERO\n", Z);
+		exit(-1);		
 	}
 
 
@@ -129,11 +146,11 @@ void MmmnFunc(int servers, char *name, int device, int sched) {
 			pq[i][j] = 0;
 		}
 	}
-	
+
 	pq[0][0] = 1.0;
 
 	// Solve the submodel
-    sub_model(N, m, D);
+	SubModel(N, m, D);
 
 
 	// Solve the composite model ...
@@ -150,7 +167,6 @@ void MmmnFunc(int servers, char *name, int device, int sched) {
         X = n / (Z + R);
         Q = X * R;
         
-
         // compute qlength dsn at the FESC */
         for (j = 1; j <= n; j++) {
             pq[j][n] = (X / sm_x[j]) * pq[j - 1][n - 1];
@@ -177,16 +193,14 @@ void MmmnFunc(int servers, char *name, int device, int sched) {
 	glob_X = X;  
 	glob_U = U; 
 
-    print_results();
-    
-    
 } // end  of MmmnFunc
 
 
 
+void SubModel(int pop, int servers, float demand) {
+// Delay center with no waiting line
+// Only valid for M/M/m/N/N
 
-void sub_model(int pop, int servers, float demand) {
-// delay center with no waiting line
     int             i;
 
     for (i = 0; i <= pop; i++) {
@@ -200,15 +214,14 @@ void sub_model(int pop, int servers, float demand) {
 
 
 
-void print_results() {
+void PrintResults() {
 	printf("\n");
-	printf("  M/M/%d/%d/%d repairmen FESC model\n", glob_m, glob_N, glob_N);
+	printf("  PDQ FESC function \'%s\'\n",  glob_devname);
 	printf("  ---------------------------------\n");
-	printf("  Machine pop:      %14d\n", glob_N);
- 	printf("  No. repairmen:    %14d\n", glob_m);
-	printf("  MT to failure:    %14g\n", glob_Z);
+	printf("  No. of servers:   %14d\n", glob_N);
+ 	printf("  No. of requests:  %14d\n", glob_m);
+	printf("  Think time:       %14g\n", glob_Z);
 	printf("  Service time:     %14.4f\n", glob_D);
-	printf("  Breakage rate:    %14.4g\n", 1 / glob_Z);
 	printf("  Service rate:     %14.4f\n", 1 / glob_D);
 	printf("  Utilization:      %14.4f\n", glob_U);
 	printf("  Per Server:       %14.4f\n", glob_U / glob_m);
@@ -220,5 +233,6 @@ void print_results() {
 	printf("  Throughput:       %14.4f\n", glob_X);
 	printf("  Response time:    %14.4f\n", glob_R);
 	printf("  Stretch factor:   %14.4f\n", glob_R / glob_D);
-}
+	printf("\n");
+} // end of PrintResults
 
