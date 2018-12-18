@@ -8,8 +8,10 @@
    
 
 CC     = gcc
-LIB    = /Users/njg/GitHub/PDQ/pdq-qnm-pkg/lib
-INCL   = /Users/njg/GitHub/PDQ/pdq-qnm-pkg/lib
+#LIB    = /Users/njg/GitHub/PDQ/pdq-qnm-pkg/lib
+LIB    = lib
+#INCL   = /Users/njg/GitHub/PDQ/pdq-qnm-pkg/lib
+INCL   = lib
 
 #CFLAGS = -I $(INCL) -l $(LIB) -ggdb
 #CFLAGS = -I $(INCL)  

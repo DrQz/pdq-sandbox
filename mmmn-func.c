@@ -15,16 +15,16 @@
 #include <stdio.h> 
 #include <stdlib.h> 
 #include <math.h>
-// #include "../pdq-qnm-pkg/lib/PDQ_Lib.h"  is ot needed here
+#include "lib/PDQ_Lib.h"  
 
 //*****************GLOBALS ******************
 # define MAX_USERS 600 // 500 for AWS-Tomcat model
 
 //Globals - these will be set by calling a PDQ_CreateClosed workload
-int glob_N;   //number of customers
-int glob_m;   //number of servers
-float glob_D; //service demand
-float glob_Z; //think time
+int glob_N;    //number of customers
+int glob_m;    //number of servers
+float glob_D;  //service demand
+float glob_Z;  //think time
 
 double glob_R; //residence time
 double glob_Q; //no.customers
@@ -33,6 +33,7 @@ double glob_U; //total utilization
 
 double sm_x[MAX_USERS + 1]; //submodel thruput
 
+//Model attributes
 char glob_wrkname[15];
 char glob_devname[15];
 
@@ -41,11 +42,11 @@ char glob_devname[15];
 int main(void) {
 
   //IDs from PDQ lib types
-  int CEN = 4;
-  int FCFS = 8;
-  int TERM = 11;
+  //int CEN = 4;
+  //int FCFS = 8;
+  //int TERM = 11;
 
-  //Emulate PDQ declarations
+  //declare emulated PDQ functions
   void CreateClosed(char * name, int wtype, int users, float think);
   void CreateMultiClosed(int servers, char * name, int device, int scheds);
   void SetDemand(char * nodename, char * workname, float servicetime);
@@ -58,7 +59,7 @@ int main(void) {
   SolveFESC();
   PrintResults();
 
-} //main
+} //end main
 
 
 void CreateClosed(char * name, int wtype, int users, float think) {
@@ -70,12 +71,13 @@ void CreateClosed(char * name, int wtype, int users, float think) {
     printf("N=%d cannot be greater than %d\n", users, MAX_USERS);
     exit(-1);
   }
-  //wtype var is not used here
+  //wtype must be TERM or BATCH, but not used here
   glob_N = users;
   glob_Z = think;
   strcpy(glob_wrkname, name);
 
 } //end CreateClosed
+
 
 void CreateMultiClosed(int servers, char * name, int device, int sched) {
 
@@ -180,7 +182,7 @@ void SolveFESC() {
   glob_X = X;
   glob_U = U;
 
-} //end of MmmnFunc
+} //end MmmnFunc
 
 
 void SubModel(int pop, int servers, float demand) {
@@ -218,4 +220,4 @@ void PrintResults() {
   printf("  Response time:    %14.4f\n", glob_R);
   printf("  Stretch factor:   %14.4f\n", glob_R / glob_D);
   printf("\n");
-} //end of PrintResults
+} //end PrintResults
