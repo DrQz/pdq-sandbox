@@ -18,8 +18,6 @@
 #include "lib/PDQ_Lib.h"  
 
 //*****************GLOBALS ******************
-# define MAX_USERS 600 // 500 for AWS-Tomcat model
-
 //Globals - these will be set by calling a PDQ_CreateClosed workload
 int glob_N;    //number of customers
 int glob_m;    //number of servers
@@ -31,7 +29,8 @@ double glob_Q; //no.customers
 double glob_X; //mean thruput
 double glob_U; //total utilization
 
-double sm_x[MAX_USERS + 1]; //submodel thruput
+# define MAX_USERS 1200 // needs to be big to model threads
+double sm_x[MAX_USERS + 1]; //submodel thruput must be double for accuracy
 
 //Model attributes
 char glob_wrkname[15];
@@ -53,6 +52,7 @@ int main(void) {
   void SolveFESC();
   void PrintResults();
 
+  //PDQ_CreateClosed("Requests", TERM, 500, 0);
   CreateClosed("Requests", TERM, 500, 0);
   CreateMultiClosed(350, "funcFESC", CEN, FCFS);
   SetDemand("funcFESC", "Requests", 0.4442);
