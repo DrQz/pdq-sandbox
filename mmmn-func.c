@@ -36,7 +36,8 @@ double sm_x[MAX_USERS + 1]; //submodel thruput must be double for accuracy
 char glob_wrkname[15];
 char glob_devname[15];
 
-//********************************************
+
+//================  MAINLINE  ================
 
 int main(void) {
 
@@ -52,8 +53,9 @@ int main(void) {
   void SolveFESC();
   void PrintResults();
 
-  //PDQ_CreateClosed("Requests", TERM, 500, 0);
-  CreateClosed("Requests", TERM, 500, 0);
+  PDQ_Init("Proto-FESC Model");
+  PDQ_CreateClosed("Requests", TERM, 500, 0);
+  //CreateClosed("Requests", TERM, 500, 0);
   CreateMultiClosed(350, "funcFESC", CEN, FCFS);
   SetDemand("funcFESC", "Requests", 0.4442);
   SolveFESC();
@@ -61,6 +63,7 @@ int main(void) {
 
 } //end main
 
+//============================================
 
 void CreateClosed(char * name, int wtype, int users, float think) {
   //Dummy function to emulate creating a CLOSED workload
@@ -120,14 +123,18 @@ void SolveFESC() {
   void SubModel(int pop, int servers, float demand);
 
   // In this M/M/m/N/N FESC the submodel is just a delay center
-  // Hence      , 'pq' is an array of 1 s and 0 s due to no waiting line in submodel
+  // Hence, 'pq' is an array of 1 s and 0 s due to no waiting line in submodel
   // dimension	is MAX_USERS + 1, e.g., 10 + 1 = 0, 1, 2,..10
   float pq[MAX_USERS + 1][MAX_USERS + 1];
+  
+  extern JOB_TYPE *job;
 
   //Get the global params
   D = glob_D;
-  N = glob_N;
-  Z = glob_Z;
+  //N = glob_N;
+  N = job[0].term->pop;
+  //Z = glob_Z;
+  Z = job[0].term->think;
   m = glob_m;
 
   //init matrix to all zeros
@@ -186,6 +193,7 @@ void SolveFESC() {
 
 
 void SubModel(int pop, int servers, float demand) {
+  //This is just one of many possible submodel types
   //Delay center with no waiting line
   // Only valid for M/M/m/N/N
 
@@ -199,6 +207,7 @@ void SubModel(int pop, int servers, float demand) {
     }
   }
 }
+
 
 void PrintResults() {
   printf("\n");

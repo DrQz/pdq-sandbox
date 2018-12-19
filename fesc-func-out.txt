@@ -1,13 +1,13 @@
 [njg]~/GitHub/PDQ/pdq-sandbox% date
 Mon Dec 17 13:41:57 PST 2018
 
-[njg]~/GitHub/PDQ/pdq-sandbox% ./mmmn-func 
+[njg]~/GitHub/PDQ/pdq-sandbox% time ./mmmn-func
 
   PDQ FESC function 'funcFESC'
   ---------------------------------
-  No. of servers:              500
+  No. of servers:                0
   No. of requests:             350
-  Think time:                1e-09
+  Think time:                    0
   Service time:             0.4442
   Service rate:             2.2512
   Utilization:            350.0000
@@ -20,6 +20,9 @@ Mon Dec 17 13:41:57 PST 2018
   Throughput:             787.9333
   Response time:            0.6346
   Stretch factor:           1.4286
+
+0.007u 0.002s 0:00.01 0.0%	0+0k 0+0io 0pf+0w
+
 
 
 
