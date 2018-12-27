@@ -73,7 +73,7 @@ int main(int argc, char *argv[]) {
    Q = X * R;
 
    printf("\n");
-   printf("  M/M/%d/%d/%d repairmen prob model\n", m, N, N);
+   printf("  M/M/%d/%d/%d probability model\n", m, N, N);
    printf("  ----------------------------\n");
    printf("  Machine pop:      %14d\n", N);
    printf("  No. repairmen:    %14d\n", m);

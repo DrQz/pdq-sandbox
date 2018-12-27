@@ -46,18 +46,27 @@ int main(void) {
   //int FCFS = 8;
   //int TERM = 11;
 
+  int requests = 500;
+  int threads  = 350;
+  float think  = 0.0;
+  float stime  = 0.4442;
+
   //declare emulated PDQ functions
   void CreateClosed(char * name, int wtype, int users, float think);
-  void CreateMultiClosed(int servers, char * name, int device, int scheds);
+  void CreateClosedMultiserver(int servers, char * name, int device, int scheds);
   void SetDemand(char * nodename, char * workname, float servicetime);
   void SolveFESC();
   void PrintResults();
 
   PDQ_Init("Proto-FESC Model");
-  PDQ_CreateClosed("Requests", TERM, 500, 0);
-  //CreateClosed("Requests", TERM, 500, 0);
-  CreateMultiClosed(350, "funcFESC", CEN, FCFS);
-  SetDemand("funcFESC", "Requests", 0.4442);
+  PDQ_CreateClosed("Requests", TERM, requests, think);
+  //Need these coz PDQ_CreateClosed not coupled yet
+  glob_N = requests;
+  glob_m = threads;
+  glob_Z = think;
+  //CreateClosed("Requests", TERM, requests, think);
+  CreateClosedMultiserver(350, "funcFESC", CEN, FCFS);
+  SetDemand("funcFESC", "Requests", stime);
   SolveFESC();
   PrintResults();
 
@@ -67,7 +76,7 @@ int main(void) {
 
 void CreateClosed(char * name, int wtype, int users, float think) {
   //Dummy function to emulate creating a CLOSED workload
-  // Extension of CreateClosed() args:char *name, int TERM, float users, float think
+  //Extension of CreateClosed() args:char *name, int TERM, float users, float think
 
   // 'users'	must be an int since it defines matrix dimensions
   if (users > MAX_USERS) {
@@ -82,7 +91,7 @@ void CreateClosed(char * name, int wtype, int users, float think) {
 } //end CreateClosed
 
 
-void CreateMultiClosed(int servers, char * name, int device, int sched) {
+void CreateClosedMultiserver(int servers, char * name, int device, int sched) {
 
   //device and sched not used here
   glob_m = servers; 
@@ -211,10 +220,10 @@ void SubModel(int pop, int servers, float demand) {
 
 void PrintResults() {
   printf("\n");
-  printf("  PDQ FESC function \'%s\'\n", glob_devname);
+  printf("  PDQ FESC node \'%s\'\n", glob_devname);
   printf("  ---------------------------------\n");
-  printf("  No. of servers:   %14d\n", glob_N);
-  printf("  No. of requests:  %14d\n", glob_m);
+  printf("  No. of requests:  %14d\n", glob_N);
+  printf("  No. of servers:   %14d\n", glob_m);
   printf("  Think time:       %14g\n", glob_Z);
   printf("  Service time:     %14.4f\n", glob_D);
   printf("  Service rate:     %14.4f\n", 1 / glob_D);

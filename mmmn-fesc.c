@@ -68,10 +68,10 @@ int main(int argc, char *argv[]) {
         exit(-1);		
 	}
 
-	if (Z == 0) {
-        printf("\'%s\': Z=%.2f can have any tiny value but not ZERO\n", pgm, Z);
-        exit(-1);		
-	}
+	//if (Z == 0) {
+    //    printf("\'%s\': Z=%.2f can have any tiny value but not ZERO\n", pgm, Z);
+    //    exit(-1);		
+	//}
 
 
 	// init matrix to all zeros 
@@ -188,7 +188,7 @@ void sub_model(int pop, int servers, float demand) {
 
 void print_results() {
 	printf("\n");
-	printf("  M/M/%d/%d/%d repairmen FESC model\n", m, N, N);
+	printf("  M/M/%d/%d/%d FESC model\n", m, N, N);
 	printf("  ---------------------------------\n");
 	printf("  Machine pop:      %14d\n", N);
  	printf("  No. repairmen:    %14d\n", m);

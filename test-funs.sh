@@ -5,12 +5,15 @@
 # waiting line, all pq[][] elements are either 1 or 0.
 servers=350
 users=500
-demand=0.45
+demand=0.4442
 think1=1e-9
-think2=1e-9
+think2=0.0
 
-./mmmn-prob $servers $demand $users $think1
+#./mmmn-prob $servers $demand $users $think1
 ./mmmn-fesc $servers $demand $users $think2
+
+# PDQ model params are internal
+./mmmn-func
 
 exit 0
 
