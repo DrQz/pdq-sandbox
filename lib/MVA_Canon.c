@@ -44,7 +44,9 @@ void canonical(void)
     extern char       s1[], s2[], s3[], s4[];
     extern JOB_TYPE  *job;
     extern NODE_TYPE *node;
-    extern double     ErlangR(double arrivrate, double servtime, int servers); // ANSI
+    
+    extern double     ErlangR(double arrivrate, double servtime, int servers); 
+    // in PDQ_MServer2.c
 
     int               k;
     int               m; // servers in MSQ case

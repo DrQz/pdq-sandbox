@@ -63,18 +63,24 @@ int main(int argc, char *argv[]) {
 
 	PDQ_Init("Proto-FESC Model");  //does nothing yet
 	PDQ_CreateClosed("Requests", TERM, requests, think); //does nothing yet
+	
 	//Need these coz PDQ_CreateClosed not coupled yet
 	glob_N = requests;
 	glob_m = threads;
 	glob_Z = think;
-	test_CreateClosed("Requests", TERM, requests, think);
+	//test_CreateClosed("Requests", TERM, requests, think);
 
 	PDQ_CreateClosedMultiserver(350, "funcFESC", CEN, FCFS);  //does nothing yet
-	test_CreateClosedMultiserver(350, "funcFESC", CEN, FCFS);
+	//test_CreateClosedMultiserver(350, "funcFESC", CEN, FCFS);
 
-	test_SetDemand("funcFESC", "Requests", stime);
-	test_SolveFESC();
-	test_Report();
+    PDQ_SetDemand("funcFESC", "Requests", stime); //does nothing yet
+	//test_SetDemand("funcFESC", "Requests", stime);
+	
+	PDQ_Solve(EXACT);
+	//test_SolveFESC();
+	
+	PDQ_Report();
+	//test_Report();
 
 } //end main
 

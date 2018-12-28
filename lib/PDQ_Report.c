@@ -574,7 +574,7 @@ void print_system_stats(int c, int should_be_class)
 	switch (should_be_class) {
 		case TERM:
 			if (job[c].term->sys->thruput == 0) {
-				sprintf(s1, "X = %10.4f for stream = %d",
+				sprintf(s1, "\nX = %10.4f for stream = %d",
 		 	job[c].term->sys->thruput, c);
 				errmsg(p, s1);
 			}

@@ -55,13 +55,16 @@ void exact(void)
 	extern            NODE_TYPE *node;
 	extern            JOB_TYPE  *job;
 	extern char       s1[], s2[], s3[], s4[];
-	extern double     getjob_pop();
-	extern void       MMmNN(void) ;
 	
+	extern double     getjob_pop();
+	
+	extern void       MMmNN(void); //in PDQ_MServer2.c
+
 	void              mva_qnm(); // in this module
 	char             *p = "exact()";
 	int               c, k;
 	int               pop[MAXCLASS] = {0, 0, 0};	/* pop vector */
+
 
 #undef DMVA
 
@@ -87,7 +90,7 @@ void exact(void)
 	}
 	
 	for (k = 0; k < nodes; k++) {
-		if (node[k].devtype == FESC) {
+		if (node[k].sched == FESC) {
 			if (PDQ_GetNodesCount() > 1) { // bail
 				strcat(s1, "Only a single FESC queueing node is allowed\n");
 				errmsg(p, s1);

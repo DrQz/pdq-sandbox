@@ -276,6 +276,7 @@ extern void approx(void);    // in MVA_Approx.c
 extern void canonical(void); // in MVA_Canon.c
 extern void exact(void);     // in PDQ_Exact.c
 
+
 extern int  getjob_index(char *wname);
 extern void getjob_name(char *str, int c);
 extern int  getnode_index(char *name);

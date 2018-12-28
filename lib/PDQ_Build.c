@@ -29,7 +29,8 @@
  * Updated by PJP on Sat Nov 3, 2012              Added support for R
  * Updated by NJG on Saturday, January 12, 2013   Set CreateXXX count returns to zero
  * Updated by NJG on Saturday, May 21, 2016       Set all Create procs to voids
- * Updated by NJG on Thursday, December 27, 2018  Added M/M/m/N/N queueing node
+ * Updated by NJG on Thursday, December 27, 2018  Added M/M/m/N/N queueing FESC  node
+ *                                                see CreateClosedMultiserver()
  *
  */
 
@@ -364,8 +365,8 @@ void     PDQ_CreateClosedMultiserver(int servers, char *name, int device, int sc
 	char           *p = "PDQ_CreateClosedMultiserver";
     
     // hack to force FESC node type
-	sched = FESC; 
-	device = servers;
+	//sched = FESC; 
+	//device = servers;
 
 	if (PDQ_DEBUG)
 	{
@@ -401,9 +402,10 @@ void     PDQ_CreateClosedMultiserver(int servers, char *name, int device, int sc
 		errmsg(p, s1);
 	} 
 	
-	
-	node[k].devtype = device;
-	node[k].sched = sched;
+	//hack for FESC solver
+	//NJG on Thursday, December 27, 2018
+	node[k].devtype = servers;
+	node[k].sched = FESC;
 
 	if (PDQ_DEBUG) {
 		typetostr(s1, node[k].devtype);
@@ -572,11 +574,11 @@ void PDQ_SetDemand_p(char *nodename, char *workname, double *time)
 	extern int        PDQ_DEBUG;
 
 	int               node_index;
-	int               job_index;
+	int               job_index; 
 
 	FILE             *out_fd;
 	
-	demands = 1; // non-zero since SetDemand now called
+	demands = 1; // count is non-zero since SetDemand now called
 
 	if (PDQ_DEBUG)
 	{
@@ -708,9 +710,10 @@ void PDQ_SetTUnit(char* unitName)
 
 
 
-/*************************************
- * Internal Functions 
- *************************************\
+//*************************************
+//  Internal Functions 
+//*************************************
+
 
 void create_term_stream(int circuit, char *label, double pop, double think)
 {

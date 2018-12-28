@@ -24,7 +24,7 @@
  
 
 double ErlangR(double arrivrate, double servtime, int servers) {
-// Called from MVA_Canon.c 
+// called from MVA_Canon.c 
 
 	extern int   PDQ_DEBUG;
 	extern char  s1[];
@@ -75,6 +75,7 @@ double ErlangR(double arrivrate, double servtime, int servers) {
 // Updated by NJG on Thursday, December 27, 2018
 
 #define MAX_USERS 1200 // needs to be big to model threads 
+#define MAXCLASS  3
 
 /* 
 int             N;      // number of customers
@@ -82,34 +83,51 @@ int             m;      // number of servers
 float           D;      // service demand 
 float           Z;      // think time
 */
-double          R;      // residence time 
-double          Q;      // no. customers 
-double          X;      // mean thruput
-double          U;      // total utilization
+
 double          sm_x[MAX_USERS + 1];
 
 
 
-
-void MMmNN(int m, int N, double D, double Z) {
+// Called from exact() in PDQ_Exact.c
+//void MMmNN(int m, int N, double D, double Z) {
+void MMmNN(void) {
 	extern int        streams, nodes;
 	extern            NODE_TYPE *node;
 	extern            JOB_TYPE  *job;
 	extern char       s1[], s2[], s3[], s4[];
 	extern double     getjob_pop();
 
-	int             i, j;
-	int             c, k;
-    int             n;
+	int i, j;
+	int c, k;
+    int n;
+    int m;
+    int N;
+    double D;
+    double Z;
+    
+    double          R;      // residence time 
+	double          Q;      // no. customers 
+	double          X;      // mean thruput
+	double          U;      // total utilization
+
     float           pq[MAX_USERS + 1][MAX_USERS + 1]; 
-    double          sumR[1] = {0.0}; //single class vector
+    double          sumR[MAXCLASS] = {0.0, 0.0, 0.0};
     
 	void            MMmNN_sub(int pop, int servers, float demand);
+
+    //hack since only one queue
+	c = 0;
+	k = 0;
+	
+    m = node[k].devtype;  //hack that passes number of servers
+    N = job[0].term->pop;
+    D = node[k].demand[c];
+    Z = job[0].term->think;
 
 	if (N > MAX_USERS) {
         printf("N=%d cannot be greater than %d\n", N, MAX_USERS);
         exit(-1);		
-	}
+	}	
 	
 	for (i = 0; i <= N; i++) {
 		for (j = 0; j <= N; j++) {
@@ -119,12 +137,12 @@ void MMmNN(int m, int N, double D, double Z) {
 	
 	pq[0][0] = 1.0;
 	
-
 	// Solve the submodel
     MMmNN_sub(N, m, D);
 
 	// Solve the composite model
     for (n = 1; n <= N; n++) {
+    
         R = 0.0;                // reset
 
         // response time at the FESC
@@ -150,7 +168,6 @@ void MMmNN(int m, int N, double D, double Z) {
 
     U = X * D;
     
-    
     // collect queueing results
 	for (k = 0; k < 1; k++) {
 		for (c = 0; c < 1; c++) {
@@ -174,8 +191,6 @@ void MMmNN(int m, int N, double D, double Z) {
 			node[k].utiliz[c] = U;
 		}
 	}
-
-
 
 } // end of MMmNN 
 
