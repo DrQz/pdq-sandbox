@@ -41,45 +41,40 @@ char glob_devname[15];
 
 int main(int argc, char *argv[]) {
 
-  //IDs from PDQ lib types
-  //int CEN = 4;
-  //int FCFS = 8;
-  //int TERM = 11;
-  
-  const char      *pgm = NULL;  //gets argv[0]
-  int threads;
-  float stime;
-  int requests;
-  float think;
-  
-	pgm = argv[0];
-	stime = atoi(*++argv);
-	stime = atof(*++argv);
+	const char  *pgm = NULL;  //gets argv[0]
+	int          threads;
+	float        stime;
+	int          requests;
+	float        think;
+
+	pgm      = argv[0];
+	stime    = atoi(*++argv);
+	stime    = atof(*++argv);
 	requests = atoi(*++argv);
-	think = atof(*++argv);
+	think    = atof(*++argv);
 
 
-  //declare emulated PDQ functions
-  void test_CreateClosed(char * name, int wtype, int users, float think);
-  void test_CreateClosedMultiserver(int servers, char * name, int device, int sched);
-  void test_SetDemand(char * nodename, char * workname, float servicetime);
-  void test_SolveFESC();
-  void test_Report();
+	//declare emulated PDQ functions
+	void test_CreateClosed(char * name, int wtype, int users, float think);
+	void test_CreateClosedMultiserver(int servers, char * name, int device, int sched);
+	void test_SetDemand(char * nodename, char * workname, float servicetime);
+	void test_SolveFESC();
+	void test_Report();
 
-  PDQ_Init("Proto-FESC Model");  //does nothing yet
-  PDQ_CreateClosed("Requests", TERM, requests, think); //does nothing yet
-  //Need these coz PDQ_CreateClosed not coupled yet
-  glob_N = requests;
-  glob_m = threads;
-  glob_Z = think;
-  test_CreateClosed("Requests", TERM, requests, think);
-  
-  PDQ_CreateClosedMultiserver(350, "funcFESC", CEN, FCFS);  //does nothing yet
-  test_CreateClosedMultiserver(350, "funcFESC", CEN, FCFS);
-  
-  test_SetDemand("funcFESC", "Requests", stime);
-  test_SolveFESC();
-  test_Report();
+	PDQ_Init("Proto-FESC Model");  //does nothing yet
+	PDQ_CreateClosed("Requests", TERM, requests, think); //does nothing yet
+	//Need these coz PDQ_CreateClosed not coupled yet
+	glob_N = requests;
+	glob_m = threads;
+	glob_Z = think;
+	test_CreateClosed("Requests", TERM, requests, think);
+
+	PDQ_CreateClosedMultiserver(350, "funcFESC", CEN, FCFS);  //does nothing yet
+	test_CreateClosedMultiserver(350, "funcFESC", CEN, FCFS);
+
+	test_SetDemand("funcFESC", "Requests", stime);
+	test_SolveFESC();
+	test_Report();
 
 } //end main
 
