@@ -20,14 +20,16 @@
  *
  * Created by NJG on 18:19:02  04-28-95 
  * Revised by NJG on 09:33:05  31-03-99
- * Updated by NJG on Mon, Apr 2, 2007           Added MSQ multiserver hack
- * Updated by NJG on Tue, Apr 3, 2007           Removed nested loops in Init
- * Updated by NJG on Wed, Apr 4, 2007           Changed MSQ -> devtype and m -> sched
- * Updated by NJG on Fri, Apr 6, 2007           Error if SetWUnit or SetTUnit before calling Create circuit
- * Updated by NJG on Wed Feb 25, 2009           Added CreateMultiNode function
- * Updated by PJP on Sat Nov 3, 2012            Added support for R
- * Updated by NJG on Saturday, January 12, 2013 Set CreateXXX count returns to zero
- * Updated by NJG on Saturday, May 21, 2016     Set all Create procs to voids
+ * Updated by NJG on Mon, Apr 2, 2007             Added MSQ multiserver node
+ * Updated by NJG on Tue, Apr 3, 2007             Removed nested loops in Init
+ * Updated by NJG on Wed, Apr 4, 2007             Changed MSQ -> devtype and m -> sched
+ * Updated by NJG on Fri, Apr 6, 2007             Error if SetWUnit or SetTUnit before 
+ *                                                  calling Create circuit
+ * Updated by NJG on Wed Feb 25, 2009             Added CreateMultiNode function
+ * Updated by PJP on Sat Nov 3, 2012              Added support for R
+ * Updated by NJG on Saturday, January 12, 2013   Set CreateXXX count returns to zero
+ * Updated by NJG on Saturday, May 21, 2016       Set all Create procs to voids
+ * Updated by NJG on Thursday, December 27, 2018  Added M/M/m/N/N queueing node
  *
  */
 
@@ -347,8 +349,81 @@ void PDQ_CreateMultiNode(int servers, char *name, int device, int sched)
 }  // PDQ_CreateMultiNode
 
 //-------------------------------------------------------------------------
+// Prototype for M/M/m/N/N FESC node
+// Added by NJG on Thursday, December 27, 2018
 
+void     PDQ_CreateClosedMultiserver(int servers, char *name, int device, int sched) {
+	
+	extern NODE_TYPE *node;
+	extern char     s1[], s2[];
+	extern int      nodes;
+	extern int      PDQ_DEBUG;
+	
+	FILE*			out_fd;
+    
+	char           *p = "PDQ_CreateClosedMultiserver";
+    
+    // hack to force FESC node type
+	sched = FESC; 
+	device = servers;
 
+	if (PDQ_DEBUG)
+	{
+		debug(p, "Entering");
+		out_fd = fopen("PDQ.out", "a");
+		fprintf(out_fd, "name : %s  device : %d  sched : %d\n", name, device, sched);
+		//The following should really be fclose
+		//		close(out_fd);
+		fclose(out_fd);
+	}
+	
+	if (streams > 1) {
+		sprintf(s1, "Only single workload allowed with CreateMultiserverClosed()\n");
+		errmsg(p, s1);
+	} 
+
+	if (k > 1) {
+		sprintf(s1, "Allocating \"%s\" exceeds %d max nodes", name, MAXNODES);
+		errmsg(p, s1);
+	}
+
+	if (strlen(name) >= MAXCHARS) {
+		sprintf(s1, "Nodename \"%s\" is longer than %d characters",
+			name, MAXCHARS);
+		errmsg(p, s1);
+	}
+
+	strcpy(node[k].devname, name);
+
+	if (servers <= 0) { 
+		// number of servers must be positive integer
+		sprintf(s1, "Must specify a positive number of servers");
+		errmsg(p, s1);
+	} 
+	
+	
+	node[k].devtype = device;
+	node[k].sched = sched;
+
+	if (PDQ_DEBUG) {
+		typetostr(s1, node[k].devtype);
+		typetostr(s2, node[k].sched);
+		PRINTF("\tNode[%d]: %s %s \"%s\"\n",
+		  k, s1, s2, node[k].devname);
+		resets(s1);
+		resets(s2);
+	};
+
+	if (PDQ_DEBUG)
+		debug(p, "Exiting");
+
+    // update global node count
+	k = ++nodes;
+	
+
+} // PDQ_CreateClosedMultiserver
+
+//-------------------------------------------------------------------------
 
 void PDQ_CreateClosed(char *name, int should_be_class, double pop, double think)
 {
@@ -631,7 +706,11 @@ void PDQ_SetTUnit(char* unitName)
 
 }  // PDQ_SetTUnit
 
-//----- Internal Functions ------------------------------------------------
+
+
+/*************************************
+ * Internal Functions 
+ *************************************\
 
 void create_term_stream(int circuit, char *label, double pop, double think)
 {

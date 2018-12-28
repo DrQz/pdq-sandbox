@@ -52,29 +52,32 @@ int main(void) {
   float stime  = 0.4442;
 
   //declare emulated PDQ functions
-  void CreateClosed(char * name, int wtype, int users, float think);
-  void CreateClosedMultiserver(int servers, char * name, int device, int scheds);
-  void SetDemand(char * nodename, char * workname, float servicetime);
-  void SolveFESC();
-  void PrintResults();
+  void test_CreateClosed(char * name, int wtype, int users, float think);
+  void test_CreateClosedMultiserver(int servers, char * name, int device, int sched);
+  void test_SetDemand(char * nodename, char * workname, float servicetime);
+  void test_SolveFESC();
+  void test_Report();
 
-  PDQ_Init("Proto-FESC Model");
-  PDQ_CreateClosed("Requests", TERM, requests, think);
+  PDQ_Init("Proto-FESC Model");  //does nothing yet
+  PDQ_CreateClosed("Requests", TERM, requests, think); //does nothing yet
   //Need these coz PDQ_CreateClosed not coupled yet
   glob_N = requests;
   glob_m = threads;
   glob_Z = think;
-  //CreateClosed("Requests", TERM, requests, think);
-  CreateClosedMultiserver(350, "funcFESC", CEN, FCFS);
-  SetDemand("funcFESC", "Requests", stime);
-  SolveFESC();
-  PrintResults();
+  test_CreateClosed("Requests", TERM, requests, think);
+  
+  PDQ_CreateClosedMultiserver(350, "funcFESC", CEN, FCFS);  //does nothing yet
+  test_CreateClosedMultiserver(350, "funcFESC", CEN, FCFS);
+  
+  test_SetDemand("funcFESC", "Requests", stime);
+  test_SolveFESC();
+  test_Report();
 
 } //end main
 
 //============================================
 
-void CreateClosed(char * name, int wtype, int users, float think) {
+void test_CreateClosed(char * name, int wtype, int users, float think) {
   //Dummy function to emulate creating a CLOSED workload
   //Extension of CreateClosed() args:char *name, int TERM, float users, float think
 
@@ -91,7 +94,8 @@ void CreateClosed(char * name, int wtype, int users, float think) {
 } //end CreateClosed
 
 
-void CreateClosedMultiserver(int servers, char * name, int device, int sched) {
+
+void test_CreateClosedMultiserver(int servers, char * name, int device, int sched) {
 
   //device and sched not used here
   glob_m = servers; 
@@ -100,7 +104,7 @@ void CreateClosedMultiserver(int servers, char * name, int device, int sched) {
 }
 
 
-void SetDemand(char * nodename, char * workname, float servicetime) {
+void test_SetDemand(char * nodename, char * workname, float servicetime) {
   //Dummy function to emulate setting service time of FESC
 
   glob_D = servicetime;
@@ -108,7 +112,7 @@ void SetDemand(char * nodename, char * workname, float servicetime) {
 } //end CreateClosed
 
 
-void SolveFESC() {
+void test_SolveFESC() {
   //This code is on the same logical footing as ErlangR() in PDQ_MServer.c
 
   // local version of PDQ globals
@@ -218,7 +222,7 @@ void SubModel(int pop, int servers, float demand) {
 }
 
 
-void PrintResults() {
+void test_Report() {
   printf("\n");
   printf("  PDQ FESC node \'%s\'\n", glob_devname);
   printf("  ---------------------------------\n");

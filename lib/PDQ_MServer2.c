@@ -1,18 +1,20 @@
-
-/*
+/*******************************************************************************
+ *  Copyright (C) 1994 - 2019, Performance Dynamics Company                    
+ *
  * NJG on Monday, December 18, 2017
- * This is prototype version (eventually to be removed)
+ * This is prototype version, eventually to be integrated into PDQ_MServer.c
  * 
  * PDQ_MServer2.c
  * 
  * Created by NJG on Mon, Apr 2, 2007
  *
- * A collection of subroutines to solve multi-server queues.
+ * A collection of subroutines to solve multiserver queues.
  * (only one function so far)
  * 		- ErlangR returns the residence for an M/M/m queue.
+ *      - 
  *
- *  $Id$
- */
+ *******************************************************************************/
+
  
 #include <stdio.h>
 #include <stdlib.h>
@@ -70,12 +72,16 @@ double ErlangR(double arrivrate, double servtime, int servers) {
 
 
 // FESC globals added by NJG on Monday, December 18, 2017
-#define MAX_USERS 500 
+// Updated by NJG on Thursday, December 27, 2018
 
+#define MAX_USERS 1200 // needs to be big to model threads 
+
+/* 
 int             N;      // number of customers
 int             m;      // number of servers
 float           D;      // service demand 
 float           Z;      // think time
+*/
 double          R;      // residence time 
 double          Q;      // no. customers 
 double          X;      // mean thruput
@@ -85,32 +91,26 @@ double          sm_x[MAX_USERS + 1];
 
 
 
-void MMmNN(void) {
-	int             i;
-	int             j;
+void MMmNN(int m, int N, double D, double Z) {
+	extern int        streams, nodes;
+	extern            NODE_TYPE *node;
+	extern            JOB_TYPE  *job;
+	extern char       s1[], s2[], s3[], s4[];
+	extern double     getjob_pop();
+
+	int             i, j;
+	int             c, k;
     int             n;
     float           pq[MAX_USERS + 1][MAX_USERS + 1]; 
+    double          sumR[1] = {0.0}; //single class vector
+    
 	void            MMmNN_sub(int pop, int servers, float demand);
 
-	if (N > 500) {
+	if (N > MAX_USERS) {
         printf("N=%d cannot be greater than %d\n", N, MAX_USERS);
         exit(-1);		
 	}
-
-	if (Z == 0) {
-        printf("Z=%.2f can have any tiny value but not ZERO\n", Z);
-        exit(-1);		
-	}
 	
-	// ***********
-	// assign queueing globals
-	N  = job[c].term->pop;
-	Z = job[c].term->think;
-
-	m;      // number of servers
-	D;      // service demand 
-
-
 	for (i = 0; i <= N; i++) {
 		for (j = 0; j <= N; j++) {
 			pq[i][j] = 0;

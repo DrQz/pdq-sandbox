@@ -1,5 +1,5 @@
 /*******************************************************************************/
-/*  Copyright (C) 1994 - 2018, Performance Dynamics Company                    */
+/*  Copyright (C) 1994 - 2019, Performance Dynamics Company                    */
 /*                                                                             */
 /*  This software is licensed as described in the file COPYING, which          */
 /*  you should have received as part of this distribution. The terms           */
@@ -92,7 +92,7 @@ void exact(void)
 				strcat(s1, "Only a single FESC queueing node is allowed\n");
 				errmsg(p, s1);
 			} else { 
-				MMmNN(); // in PDQ_MServer.c 
+				MMmNN(); // in PDQ_MServer2.c 
 				return;
 			}	
 		}

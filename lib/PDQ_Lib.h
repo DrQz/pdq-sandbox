@@ -1,5 +1,5 @@
 /*******************************************************************************/
-/*  Copyright (C) 1994 - 2018, Performance Dynamics Company                    */
+/*  Copyright (C) 1994 - 2019, Performance Dynamics Company                    */
 /*                                                                             */
 /*  This software is licensed as described in the file COPYING, which          */
 /*  you should have received as part of this distribution. The terms           */
@@ -38,7 +38,7 @@
 // Do not modify order of fields.
 // Must not contain more than 26 characters for Report() header.
 
-#define PDQ_VERSION    "Version 7.0.0 Build 052116"
+#define PDQ_VERSION    "Version 7.0.0 Build 122718"
 
 
 //---- TYPES --------------------------------------------------------------
@@ -60,13 +60,13 @@
 #define OPEN    1
 #define CLOSED  2
 
-// Queueing Node Types
+// Queueing node device types
 #define FESC    3                /* flow-equivalent service center */
-#define CEN     4                /* standard FCFS queueing center */
+#define CEN     4                /* standard queueing center */
 #define DLY     5                /* unspecified delay center */
-#define MSQ     6                /* M/M/m multi-server queue */
+#define MSQ     6                /* M/M/m multiserver queue */
 
-// Queueing Disciplines
+// Queueing sched types
 #define ISRV    7                /* infinite server */
 #define FCFS    8                /* first-come first-serve */
 #define PSHR    9                /* processor sharing */
@@ -173,11 +173,16 @@ int     PDQ_CreateOpen_p(char *name, double *lambda);
 //int     PDQ_CreateNode(char *name, int device, int sched);
 void     PDQ_CreateNode(char *name, int device, int sched);
 
-// Define multiserver queueing center in either a closed or open circuit
+// Define open network multiserver MSQ queueing device
 // Prototype as defined in Chapter 6 of the "Perl::PDQ" book
 // New in PDQ v5.0. Added by NJG on Wed Feb 25, 2009
 //int     PDQ_CreateMultiNode(int servers, char *name, int device, int sched);
 void     PDQ_CreateMultiNode(int servers, char *name, int device, int sched);
+
+// Define closed network multiserver FESC queueing device
+// Added  by NJG on Thursday, December 27, 2018 for PDQ v7.0.0
+//int      PDQ_CreateClosedMultiserver(int servers, char *name, int device, int sched);
+void     PDQ_CreateClosedMultiserver(int servers, char *name, int device, int sched);
 
 //------------------------------------------------------
 // Next 2 functions will be used when current PDQ Create functions become procedures
