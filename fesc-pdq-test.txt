@@ -1,9 +1,7 @@
-[njg]~/PDQ/% ./test-funs.sh 
-
                         PRETTY DAMN QUICK REPORT         
                ==========================================
-               ***  on   Thu Dec 27 19:35:35 2018     ***
-               ***  for  Proto-FESC Model             ***
+               ***  on   Thu Dec 27 20:24:12 2018     ***
+               ***  for  AWS-Tomcat Cloud Model       ***
                ***  PDQ  Version 7.0.0 Build 122718   ***
                ==========================================
 
@@ -15,7 +13,7 @@ WORKLOAD Parameters:
 
 Node Sched Resource   Workload   Class     Demand
 ---- ----- --------   --------   -----     ------
-  1  FESC  funcFESC   Requests   Closed    0.4442000091
+  1  FESC  cloudFESC  Requests   Closed    0.4442000091
 
 Queueing Circuit Totals
 Streams:   1
@@ -38,14 +36,14 @@ Solution Method: EXACT
 Metric                     Value    Unit
 ------                     -----    ----
 Workload: "Requests"
-Mean concurrency          0.0000    Users
-Mean throughput         787.9333    Users/Sec
+Mean concurrency          0.0000    Reqs
+Mean throughput         787.9333    Reqs/Sec
 Response time             0.6346    Sec
 Round trip time           0.6346    Sec
 Stretch factor            1.4286
 
 Bounds Analysis:
-Max throughput            2.2512    Users/Sec
+Max throughput            2.2512    Reqs/Sec
 Min response              0.4442    Sec
 Max Demand                0.4442    Sec
 Tot demand                0.4442    Sec
@@ -57,11 +55,11 @@ Optimal clients           1.0000    Clients
 
 Metric          Resource     Work              Value   Unit
 ------          --------     ----              -----   ----
-Capacity        funcFESC     Requests              1   Servers
-Throughput      funcFESC     Requests       787.9333   Users/Sec
-In service      funcFESC     Requests       350.0000   Users
-Utilization     funcFESC     Requests     35000.0000   Percent
-Queue length    funcFESC     Requests       500.0000   Users
-Waiting line    funcFESC     Requests       150.0000   Users
-Waiting time    funcFESC     Requests         0.1904   Sec
-Residence time  funcFESC     Requests         0.6346   Sec
+Capacity        cloudFESC    Requests            350   Servers
+Throughput      cloudFESC    Requests       787.9333   Reqs/Sec
+In service      cloudFESC    Requests     122500.0000   Reqs
+Utilization     cloudFESC    Requests     35000.0000   Percent
+Queue length    cloudFESC    Requests       500.0000   Reqs
+Waiting line    cloudFESC    Requests       150.0000   Reqs
+Waiting time    cloudFESC    Requests         0.1904   Sec
+Residence time  cloudFESC    Requests         0.6346   Sec

@@ -61,8 +61,8 @@ int main(int argc, char *argv[]) {
 	void test_SolveFESC();
 	void test_Report();
 
-	PDQ_Init("Proto-FESC Model");  //does nothing yet
-	PDQ_CreateClosed("Requests", TERM, requests, think); //does nothing yet
+	PDQ_Init("AWS-Tomcat Cloud Model");  //does nothing yet
+	PDQ_CreateClosed("Requests", TERM, requests, think); 
 	
 	//Need these coz PDQ_CreateClosed not coupled yet
 	glob_N = requests;
@@ -70,11 +70,13 @@ int main(int argc, char *argv[]) {
 	glob_Z = think;
 	//test_CreateClosed("Requests", TERM, requests, think);
 
-	PDQ_CreateClosedMultiserver(350, "funcFESC", CEN, FCFS);  //does nothing yet
-	//test_CreateClosedMultiserver(350, "funcFESC", CEN, FCFS);
+	PDQ_CreateClosedMultiserver(350, "cloudFESC", CEN, FCFS); 
+	//test_CreateClosedMultiserver(350, "cloudFESC", CEN, FCFS);
 
-    PDQ_SetDemand("funcFESC", "Requests", stime); //does nothing yet
-	//test_SetDemand("funcFESC", "Requests", stime);
+    PDQ_SetDemand("cloudFESC", "Requests", stime); 
+	//test_SetDemand("cloudFESC", "Requests", stime);
+	
+	PDQ_SetWUnit("Reqs");
 	
 	PDQ_Solve(EXACT);
 	//test_SolveFESC();

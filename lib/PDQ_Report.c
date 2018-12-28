@@ -754,9 +754,9 @@ void print_node_stats(int c, int should_be_class)
 // New metric: MSQ server capacity; the 'm' in M/M/m
 			resets(s3);
 			typetostr(s3, node[k].sched);
-			if (node[k].sched == MSQ) {
+			if (node[k].sched == MSQ || node[k].sched == FESC) {
 			// This is a hack until the multiserver data types are consistent
-			// number of MSQ servers
+			// Number of MSQ servers
 				mservers = node[k].devtype; 
 			} else {
 				mservers = 1;
