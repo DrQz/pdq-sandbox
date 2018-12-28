@@ -13,7 +13,7 @@ think2=0.0
 ./mmmn-fesc $servers $demand $users $think2
 
 # PDQ model params are internal
-./mmmn-func
+./mmmn-func $servers $demand $users $think2
 
 exit 0
 

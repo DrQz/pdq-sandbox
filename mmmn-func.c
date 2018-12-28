@@ -37,19 +37,27 @@ char glob_wrkname[15];
 char glob_devname[15];
 
 
-//================  MAINLINE  ================
+//================  Run from shell script  ================
 
-int main(void) {
+int main(int argc, char *argv[]) {
 
   //IDs from PDQ lib types
   //int CEN = 4;
   //int FCFS = 8;
   //int TERM = 11;
+  
+  const char      *pgm = NULL;  //gets argv[0]
+  int threads;
+  float stime;
+  int requests;
+  float think;
+  
+	pgm = argv[0];
+	stime = atoi(*++argv);
+	stime = atof(*++argv);
+	requests = atoi(*++argv);
+	think = atof(*++argv);
 
-  int requests = 500;
-  int threads  = 350;
-  float think  = 0.0;
-  float stime  = 0.4442;
 
   //declare emulated PDQ functions
   void test_CreateClosed(char * name, int wtype, int users, float think);
