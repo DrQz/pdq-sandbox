@@ -119,7 +119,7 @@ void MMmNN(void) {
 	c = 0;
 	k = 0;
 	
-    m = node[k].devtype;  //hack that passes number of servers
+    m = node[k].servers;  //Added by NJG on Saturday, December 29, 2018
     N = job[0].term->pop;
     D = node[k].demand[c];
     Z = job[0].term->think;

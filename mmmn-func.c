@@ -7,8 +7,9 @@
  * PDQ_CreateMultiClosed Current PDQ_CreateMultiNode(int servers, char *name,
  * int device, int sched) will be renamed PDQ_CreateMultiOpen()
  * 
- * Created by NJG on Sunday, December 17, 2017 Revised by NJG on Sunday,
- * December 16, 2018
+ * Created by NJG on Sunday, December 17, 2017 
+ * Revised by NJG on Sunday, December 16, 2018
+ * 
  */
 
 #include <string.h> 
@@ -70,7 +71,7 @@ int main(int argc, char *argv[]) {
 	glob_Z = think;
 	//test_CreateClosed("Requests", TERM, requests, think);
 
-	PDQ_CreateClosedMultiserver(350, "cloudFESC", CEN, FCFS); 
+	PDQ_CreateClosedMultiserver(350, "cloudFESC", MSC, FCFS); 
 	//test_CreateClosedMultiserver(350, "cloudFESC", CEN, FCFS);
 
     PDQ_SetDemand("cloudFESC", "Requests", stime); 

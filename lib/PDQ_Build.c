@@ -325,8 +325,8 @@ void PDQ_CreateMultiNode(int servers, char *name, int device, int sched)
 	
 	
 	node[k].devtype = device;
-	node[k].sched = sched;
-	node[k].sched = servers; // Added by NJG on Dec 29, 2018
+	node[k].sched   = sched;
+	node[k].servers = servers; // Added by NJG on Dec 29, 2018
 
 	if (PDQ_DEBUG) {
 		typetostr(s1, node[k].devtype);
@@ -400,7 +400,7 @@ void     PDQ_CreateClosedMultiserver(int servers, char *name, int device, int sc
 	
 	// Added by NJG on Dec 29, 2018
 	node[k].devtype = device;
-	node[k].sched = sched;
+	node[k].sched   = sched;
 	node[k].servers = servers;
 
 	if (PDQ_DEBUG) {
