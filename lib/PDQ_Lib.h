@@ -56,6 +56,9 @@
 #define MAXSTREAMS    64        /* Max job streams */
 #define MAXCHARS      64        /* Max chars in param fields */
 
+#define MAX_USERS 1200       // needs to be big to model threads 
+#define MAXCLASS  3          // max PDQ stream types
+
 // Queueing network model types
 #define VOID    0				// Changed per PDQ_Init code (NJG on Apr 4, 2007)
 #define OPEN    1
@@ -179,8 +182,10 @@ void     PDQ_CreateNode(char *name, int device, int sched);
 
 // Define open network multiserver MSQ queueing device
 // Prototype as defined in Chapter 6 of the "Perl::PDQ" book
-// New in PDQ v5.0. Added by NJG on Wed Feb 25, 2009
+// New in PDQ 5.0. Added by NJG on Wed Feb 25, 2009
 void     PDQ_CreateMultiNode(int servers, char *name, int device, int sched);
+// Renamed in PDQ 7.0
+//void     PDQ_CreateOpenMultiserver(int servers, char *name, int device, int sched);
 
 // Define closed network multiserver FESC queueing device
 // Added  by NJG on Thursday, December 27, 2018 for PDQ v7.0.0

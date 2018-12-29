@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (C) 1994 - 2019, Performance Dynamics Company                    
+ *  Copyright (C) 2018 - 2019, Performance Dynamics Company                    
  *
  * NJG on Monday, December 18, 2017
  * This is prototype version, eventually to be integrated into PDQ_MServer.c
@@ -71,26 +71,14 @@ double ErlangR(double arrivrate, double servtime, int servers) {
 
 
 
-// FESC globals added by NJG on Monday, December 18, 2017
 // Updated by NJG on Thursday, December 27, 2018
-
-#define MAX_USERS 1200 // needs to be big to model threads 
-#define MAXCLASS  3
-
-/* 
-int             N;      // number of customers
-int             m;      // number of servers
-float           D;      // service demand 
-float           Z;      // think time
-*/
-
-double          sm_x[MAX_USERS + 1];
+extern double     sm_x[MAX_USERS + 1]; // global submodel thruput
 
 
-
+void MServerFESC(void) {
+// Was void MMmNN(int m, int N, double D, double Z) {
 // Called from exact() in PDQ_Exact.c
-//void MMmNN(int m, int N, double D, double Z) {
-void MMmNN(void) {
+
 	extern int        streams, nodes;
 	extern            NODE_TYPE *node;
 	extern            JOB_TYPE  *job;
@@ -105,15 +93,15 @@ void MMmNN(void) {
     double D;
     double Z;
     
-    double          R;      // residence time 
-	double          Q;      // no. customers 
-	double          X;      // mean thruput
-	double          U;      // total utilization
+    double R;      // residence time 
+	double Q;      // no. customers 
+	double X;      // mean thruput
+	double U;      // total utilization
 
     float           pq[MAX_USERS + 1][MAX_USERS + 1]; 
     double          sumR[MAXCLASS] = {0.0, 0.0, 0.0};
     
-	void            MMmNN_sub(int pop, int servers, float demand);
+	void            MServers(int pop, int servers, float demand);
 
     //hack since only one queue
 	c = 0;
@@ -137,8 +125,8 @@ void MMmNN(void) {
 	
 	pq[0][0] = 1.0;
 	
-	// Solve the submodel
-    MMmNN_sub(N, m, D);
+	// Solve the multiple servers submodel
+    MServers(N, m, D);
 
 	// Solve the composite model
     for (n = 1; n <= N; n++) {
@@ -192,11 +180,11 @@ void MMmNN(void) {
 		}
 	}
 
-} // end of MMmNN 
+} // end of MServerFESC 
 
 
-void MMmNN_sub(int pop, int servers, float demand) {
-// delay center with no waiting line
+void MServers(int pop, int servers, float demand) {
+// Multiple servers are a delay center with no waiting line
     int             i;
     
     for (i = 0; i <= pop; i++) {
@@ -207,9 +195,6 @@ void MMmNN_sub(int pop, int servers, float demand) {
         }
     }
     
-} // end of MMmNN_sub 
-
-
-
+} // end of MServers 
 
 

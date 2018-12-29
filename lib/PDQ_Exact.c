@@ -56,7 +56,7 @@ void exact(void)
 	
 	extern double     getjob_pop();
 	
-	extern void       MMmNN(void); //in PDQ_MServer2.c
+	extern void       MServerFESC(void); //in PDQ_MServer2.c
 
 	void              mva_qnm(); // in this module
 	char             *p = "exact()";
@@ -93,7 +93,7 @@ void exact(void)
 				strcat(s1, "Only a single MSC (FESC) queueing node is allowed\n");
 				errmsg(p, s1);
 			} else { 
-				MMmNN(); // in PDQ_MServer2.c 
+				MServerFESC(); // in PDQ_MServer2.c 
 				return;
 			}	
 		}
