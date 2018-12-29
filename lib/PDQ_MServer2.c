@@ -1,17 +1,20 @@
 /*******************************************************************************
- *  Copyright (C) 2018 - 2019, Performance Dynamics Company                    
+ *  Copyright (C) 2007 - 2019, Performance Dynamics Company                    
+ *
+ * PDQ_MServer2.c
+ *
+ * Collection of subroutines to solve multiserver queues:
+ * 		+ ErlangR returns the residence for an M/M/m queue.
+ *      + MServerFESC solves single M/M/m/N/N queue
  *
  * NJG on Monday, December 18, 2017
- * This is prototype version, eventually to be integrated into PDQ_MServer.c
+ * This is prototype version of M/M/m/N/N FESC
+ * Ultimately will be integrated into PDQ_MServer.c
  * 
- * PDQ_MServer2.c
- * 
- * Created by NJG on Mon, Apr 2, 2007
+ * Created by NJG on Monday, April 2, 2007       - Implemented ErlangR
+ * Updated by NJG on Monday, December 18, 2017   - Failed implementation of MServerFESC
+ * Updated by NJG on Saturday, December 19, 2018 - Working implementation of MServerFESC
  *
- * A collection of subroutines to solve multiserver queues.
- * (only one function so far)
- * 		- ErlangR returns the residence for an M/M/m queue.
- *      - 
  *
  *******************************************************************************/
 
@@ -73,6 +76,7 @@ double ErlangR(double arrivrate, double servtime, int servers) {
 
 // Updated by NJG on Thursday, December 27, 2018
 extern double     sm_x[MAX_USERS + 1]; // global submodel thruput
+// in PDQ_Globals.c
 
 
 void MServerFESC(void) {
@@ -86,7 +90,7 @@ void MServerFESC(void) {
 	extern double     getjob_pop();
 
 	int i, j;
-	int c, k;
+	int c, k, c_fesc, k_fesc;
     int n;
     int m;
     int N;
@@ -97,20 +101,34 @@ void MServerFESC(void) {
 	double Q;      // no. customers 
 	double X;      // mean thruput
 	double U;      // total utilization
-
+	
     float           pq[MAX_USERS + 1][MAX_USERS + 1]; 
     double          sumR[MAXCLASS] = {0.0, 0.0, 0.0};
+	char            *p = "MServerFESC()";
     
 	void            MServers(int pop, int servers, float demand);
-
-    //hack since only one queue
-	c = 0;
-	k = 0;
 	
-    m = node[k].servers;  //Added by NJG on Saturday, December 29, 2018
-    N = job[0].term->pop;
-    D = node[k].demand[c];
-    Z = job[0].term->think;
+	//Added by NJG on Saturday, December 29, 2018
+	for (c = 0; c < streams; c++) {
+		c_fesc = c;
+		if (c_fesc > 0) {
+			sprintf(s1, "Streams=%d but only single workload allowed with MSC queueing node", c_fesc);
+			errmsg(p, s1);
+		}
+	
+		for (k = 0; k < nodes; k++) {
+			k_fesc = k;
+			if (k_fesc > 0) {
+			sprintf(s1, "Node=%d but only single node allowed with MSC queue type", k_fesc);
+			errmsg(p, s1);
+			}
+		}
+	}
+
+    m = node[k_fesc].servers;  //Added by NJG on Saturday, December 29, 2018
+    N = job[c_fesc].term->pop;
+    D = node[k_fesc].demand[c_fesc];
+    Z = job[c_fesc].term->think;
 
 	if (N > MAX_USERS) {
         printf("N=%d cannot be greater than %d\n", N, MAX_USERS);
@@ -152,39 +170,38 @@ void MServerFESC(void) {
         for (j = 1; j <= n; j++) {
             pq[0][n] -= pq[j][n];
         }
-    }
+        
+    } // loop over n
 
     U = X * D;
     
     // collect queueing results
-	for (k = 0; k < 1; k++) {
-		for (c = 0; c < 1; c++) {
-		
-			switch (job[c].should_be_class) {
-				case TERM:
-					job[c].term->sys->thruput = X;
-					job[c].term->sys->response = R;
-					break;
-				case BATCH:
-					job[c].batch->sys->thruput = X;
-					job[c].batch->sys->response = R;
-					break;
-				default:
-					break;
-			}
-			
-			node[k].qsize[c] = Q;
-			node[k].resit[c] = R;
-			sumR[c] += node[k].resit[c];
-			node[k].utiliz[c] = U;
-		}
+	switch (job[c_fesc].should_be_class) {
+		case TERM:
+			job[c_fesc].term->sys->thruput = X;
+			job[c_fesc].term->sys->response = R;
+			break;
+		case BATCH:
+			job[c_fesc].batch->sys->thruput = X;
+			job[c_fesc].batch->sys->response = R;
+			break;
+		default:
+			break;
 	}
+	
+	node[k_fesc].qsize[c_fesc] = Q;
+	node[k_fesc].resit[c_fesc] = R;
+	sumR[c_fesc] += node[k_fesc].resit[c_fesc];
+	node[k_fesc].utiliz[c_fesc] = U;
+		
 
 } // end of MServerFESC 
 
 
 void MServers(int pop, int servers, float demand) {
 // Multiple servers are a delay center with no waiting line
+// Called by MServerFESC()
+
     int             i;
     
     for (i = 0; i <= pop; i++) {

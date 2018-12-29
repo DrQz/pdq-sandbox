@@ -38,7 +38,7 @@ char glob_wrkname[15];
 char glob_devname[15];
 
 
-//================  Run from shell script  ================
+//================  Run from shell script to pass in args ================
 
 int main(int argc, char *argv[]) {
 
