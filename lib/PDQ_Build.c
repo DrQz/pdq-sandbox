@@ -1,5 +1,5 @@
 /*******************************************************************************/
-/*  Copyright (C) 1994 - 2016, Performance Dynamics Company                    */
+/*  Copyright (C) 1994 - 2019, Performance Dynamics Company                    */
 /*                                                                             */
 /*  This software is licensed as described in the file COPYING, which          */
 /*  you should have received as part of this distribution. The terms           */
@@ -15,8 +15,6 @@
 
 /*
  * PDQ_Build.c
- * 
- *  $Id$
  *
  * Created by NJG on 18:19:02  04-28-95 
  * Revised by NJG on 09:33:05  31-03-99
@@ -31,6 +29,7 @@
  * Updated by NJG on Saturday, May 21, 2016       Set all Create procs to voids
  * Updated by NJG on Thursday, December 27, 2018  Added M/M/m/N/N queueing FESC  node
  *                                                see CreateClosedMultiserver()
+ * Updated by NJG on Saturday, December 29, 2018 New MSO, MSC multi-server devtypes
  *
  */
 
@@ -250,11 +249,11 @@ void PDQ_CreateNode(char *name, int device, int sched)
 
 	strcpy(node[k].devname, name);
 
-	
-	if (sched == MSQ && device < 0) { 
+
+	if (device == MSO && device < 0) { 
 		// interpret node as multiserver and
 		// number of servers must be positive integer
-		sprintf(s1, "Must specify MSQ node with CEN equal to positive number of servers");
+		sprintf(s1, "Must specify as MSO node");
 		errmsg(p, s1);
 	} 
 	
@@ -293,10 +292,6 @@ void PDQ_CreateMultiNode(int servers, char *name, int device, int sched)
 
 	FILE*			out_fd;
 
-    // hack to force MSQ (Multi Server Queue) node type
-	sched = MSQ; 
-	device = servers;
-
 	if (PDQ_DEBUG)
 	{
 		debug(p, "Entering");
@@ -331,6 +326,7 @@ void PDQ_CreateMultiNode(int servers, char *name, int device, int sched)
 	
 	node[k].devtype = device;
 	node[k].sched = sched;
+	node[k].sched = servers; // Added by NJG on Dec 29, 2018
 
 	if (PDQ_DEBUG) {
 		typetostr(s1, node[k].devtype);
@@ -402,10 +398,10 @@ void     PDQ_CreateClosedMultiserver(int servers, char *name, int device, int sc
 		errmsg(p, s1);
 	} 
 	
-	//hack for FESC solver
-	//NJG on Thursday, December 27, 2018
-	node[k].devtype = servers;
-	node[k].sched = FESC;
+	// Added by NJG on Dec 29, 2018
+	node[k].devtype = device;
+	node[k].sched = sched;
+	node[k].servers = servers;
 
 	if (PDQ_DEBUG) {
 		typetostr(s1, node[k].devtype);

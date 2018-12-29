@@ -21,11 +21,9 @@
  * and thus, only a 3-deep loop.
  * Hence, PDQ_Exact and not MVA_Exact, which uses recurseration.
  * 
- * Edited by NJG: Fri Feb  5 16:58:09 PST 1999
- * 	Fix N=1 stability problem
- * 
- * Updated by PJP: Sat Nov 3 2012
- * 	Added support for R
+ * Edited by NJG: Fri Feb  5 16:58:09 PST 1999     Fix N=1 stability problem
+ * Updated by PJP: Sat Nov 3 2012                  Added support for R
+ * Updated by NJG on Saturday, December 29, 2018   New MSO, MSC multi-server devtypes
  *
  */
 
@@ -90,9 +88,9 @@ void exact(void)
 	}
 	
 	for (k = 0; k < nodes; k++) {
-		if (node[k].sched == FESC) {
+		if (node[k].devtype == MSC) { //Edited by NJG on Saturday, December 29, 2018
 			if (PDQ_GetNodesCount() > 1) { // bail
-				strcat(s1, "Only a single FESC queueing node is allowed\n");
+				strcat(s1, "Only a single MSC (FESC) queueing node is allowed\n");
 				errmsg(p, s1);
 			} else { 
 				MMmNN(); // in PDQ_MServer2.c 

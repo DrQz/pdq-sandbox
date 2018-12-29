@@ -1,5 +1,5 @@
 /*******************************************************************************/
-/*  Copyright (C) 1994 - 2015, Performance Dynamics Company                    */
+/*  Copyright (C) 1994 - 2019, Performance Dynamics Company                    */
 /*                                                                             */
 /*  This software is licensed as described in the file COPYING, which          */
 /*  you should have received as part of this distribution. The terms           */
@@ -25,11 +25,10 @@
  * Updated by NJG on Tuesday, August 18, 2015 
  * 		Removed floor() in GetLoadOpt() return
  *		Added tests for PDQ circuit existence
- * Updated by NJG on Wed, August 19, 2015  Use PRINTF from PDQ_Lib.h for R
- * Updated by NJG on Sunday, December 16, 2018 TYPE_TABLE for M/M/n/N/N FESC node
-
+ * Updated by NJG on Wed, August 19, 2015         Use PRINTF from PDQ_Lib.h for R
+ * Updated by NJG on Sunday, December 16, 2018    TYPE_TABLE for M/M/n/N/N FESC node
+ * Updated by NJG on Saturday, December 29, 2018  New MSO, MSC multi-server devtypes
  *
- *  $Id$
  */
 
 #include <stdio.h>
@@ -74,10 +73,11 @@ TYPE_TABLE
 		{"VOID",    VOID},
 		{"OPEN",    OPEN},
 		{"CLOSED",  CLOSED},
-		{"FESC",    FESC},   //Edited by NJG for M/M/n/N/N FESC on Dec 16, 2018
 		{"CEN",     CEN},
 		{"DLY",     DLY},
-		{"MSQ",     MSQ},
+		{"MSO",     MSO},  //Edited by NJG on Saturday, December 29, 2018 (was MSQ)
+     /* {"FESC",    FESC}, Edited by NJG for M/M/n/N/N FESC on Dec 16, 2018 */
+		{"MSC",     MSC},  //Added by NJG on Saturday, December 29, 2018
 		{"ISRV",    ISRV},
 		{"FCFS",    FCFS},
 		{"PSHR",    PSHR},
@@ -400,11 +400,12 @@ PDQ_GetUtilization(char *device, char *work, int should_be_class)
 				// X is total arrival rate for MSQ
 				u = node[k].demand[c] * x;
 				
-				// Edited by NJG on Thursday, September 10, 2009
-				// Calculate per-server utilization; divide by m
-				if (node[k].sched == MSQ) {
-					m = node[k].devtype;
-					u = u/m;
+		        // Updated by NJG on Dec 29, 2018 with new NODE_TYPEs in PDQ_Lib.h
+				// Edited by NJG on September 10, 2009
+				// Divide by m to calculate per-server utilization
+				if (node[k].devtype == MSO) {
+					m = node[k].servers;
+					u = u / m;
 				}
 				return (u);
 			}

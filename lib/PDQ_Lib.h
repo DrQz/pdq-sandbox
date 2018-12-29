@@ -34,11 +34,11 @@
 
 // The following string constant is read by the GetVersion and Report()
 // Updated by NJG on Tuesday, May 24, 2016 from string literal to #define constant
-// to suppress compiler warnings.
-// Do not modify order of fields.
+// thereby suppressing compiler warnings.
+// Modifying the order of TYPE fields ramifies into PDQ_Utils.c TYPE_TABLE
 // Must not contain more than 26 characters for Report() header.
 
-#define PDQ_VERSION    "Version 7.0.0 Build 122718"
+#define PDQ_VERSION    "Version 7.0.0 Build 122918"
 
 
 //---- TYPES --------------------------------------------------------------
@@ -50,40 +50,41 @@
 #define   FALSE 0
 #endif /* FALSE */
 
+// Size limits
 #define MAXNODES    1024        /* Max queueing nodes */
 #define MAXBUF       128        /* Biggest buffer */
 #define MAXSTREAMS    64        /* Max job streams */
 #define MAXCHARS      64        /* Max chars in param fields */
 
-// Queueing Network Types
+// Queueing network model types
 #define VOID    0				// Changed per PDQ_Init code (NJG on Apr 4, 2007)
 #define OPEN    1
 #define CLOSED  2
 
 // Queueing node device types
-#define FESC    3                /* flow-equivalent service center */
-#define CEN     4                /* standard queueing center */
-#define DLY     5                /* unspecified delay center */
-#define MSQ     6                /* M/M/m multiserver queue */
+#define CEN     3                /* standard queueing center */
+#define DLY     4                /* unspecified delay center */
+#define MSO     5                /* multi-server open queue M/M/m */
+#define MSC     6                /* multi-server closed queue M/M/m/N/N  FESC algorithm */
 
-// Queueing sched types
+// Queueing node sched types
 #define ISRV    7                /* infinite server */
 #define FCFS    8                /* first-come first-serve */
 #define PSHR    9                /* processor sharing */
 #define LCFS    10               /* last-come first-serve */
 
-// Queueing Job Types
+// Queueing stream job types
 #define TERM   11
 #define TRANS  12
 #define BATCH  13
 
-// Solution Methods
+// Solution methods
 #define EXACT  14		// for moderate TERM workloads
 #define APPROX 15		// for large TERM workloads
 #define CANON  16		// for TRANS workloads
-#define APPROXMSQ 17	// multiclass MSQ workloads (NJG on May 8, 2016)
+#define APPROXMSQ 17	// multiclass MSO workloads (NJG on May 8, 2016)
 
-// Service Time and Demand Types
+// Service time and Demand types
 #define VISITS 18
 #define DEMAND 19
 
@@ -137,9 +138,12 @@ typedef struct {
    TRANSACTION_TYPE *trans;
 } JOB_TYPE;
 
+
+// Node attributes
 typedef struct {
-   int               devtype;               /* CEN, FESC, MSQ ... */
-   int               sched;                 /* FCFS, ... */
+   int               devtype;               // CEN, MSO, MSC,  ... 
+   int               sched;                 // FCFS, PSHR, ... 
+   int               servers;               // Added by NJG on Dec 29, 2018
    char              devname[MAXCHARS];
    double            visits[MAXSTREAMS];
    double            service[MAXSTREAMS];
@@ -176,12 +180,10 @@ void     PDQ_CreateNode(char *name, int device, int sched);
 // Define open network multiserver MSQ queueing device
 // Prototype as defined in Chapter 6 of the "Perl::PDQ" book
 // New in PDQ v5.0. Added by NJG on Wed Feb 25, 2009
-//int     PDQ_CreateMultiNode(int servers, char *name, int device, int sched);
 void     PDQ_CreateMultiNode(int servers, char *name, int device, int sched);
 
 // Define closed network multiserver FESC queueing device
 // Added  by NJG on Thursday, December 27, 2018 for PDQ v7.0.0
-//int      PDQ_CreateClosedMultiserver(int servers, char *name, int device, int sched);
 void     PDQ_CreateClosedMultiserver(int servers, char *name, int device, int sched);
 
 //------------------------------------------------------
