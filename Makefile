@@ -1,10 +1,11 @@
-# Test PDQ7/lib C source changes
+# Test PDQ 7.0.0 /lib C source changes
 #
 # Created by NJG on Saturday, May 21, 2016 - Set lib to GitHub path
 # Updated by NJG on Tuesday, May 24, 2016  - Changed CFLAGS to remove 'linker' warnings
 # Updated by NJG on Monday, December 11, 2017 
 #   - mmmn-fesc and mmmn-prob models as self-contained codes
 #   - Intend to incorporate into PDQ_Lib.h
+# Updated by NJG on Saturday, December 19, 2018
    
 
 CC     = gcc
@@ -19,7 +20,8 @@ INCL   = lib
 PGMS	= \
 		mmmn-fesc \
 		mmmn-prob \
-		mmmn-func
+		mmmn-func \
+		mmm-new-name
 
 all: $(PGMS)
 
@@ -32,6 +34,8 @@ mmmn-prob: mmmn-prob.c mmmn-prob.o
 mmmn-func: mmmn-func.c mmmn-func.o
 	${CC} -o mmmn-func mmmn-func.c -I$(INCL) -L$(LIB) -lpdq -lm	
 
+mmm-new-name: mmm-new-name.c mmm-new-name.o
+	${CC} -o mmm-new-name mmm-new-name.c -I$(INCL) -L$(LIB) -lpdq -lm	
 
 clean:
 	-/bin/rm -f ${PGMS} *.o
