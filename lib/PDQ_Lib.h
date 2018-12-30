@@ -38,7 +38,7 @@
 // Modifying the order of TYPE fields ramifies into PDQ_Utils.c TYPE_TABLE
 // Must not contain more than 26 characters for Report() header.
 
-#define PDQ_VERSION    "Version 7.0.0 Build 122918"
+#define PDQ_VERSION    "Version 7.0.0 Build 123018"
 
 
 //---- TYPES --------------------------------------------------------------
@@ -170,11 +170,17 @@ typedef struct {
 //int     PDQ_CreateClosed(char *name, int should_be_class, double pop, double think);
 void     PDQ_CreateClosed(char *name, int should_be_class, double pop, double think);
 int     PDQ_CreateClosed_p(char *name, int should_be_class, double *pop, double *think);
+// Added by NJG on Sunday, December 30, 2018 for PDQ 7.0
+void CreateClosedWorkload(char *name, int should_be_class, double pop, double think);
+
 
 // Define the workload in an open-circuit queueing * model.
 //int     PDQ_CreateOpen(char *name, double lambda);
 void     PDQ_CreateOpen(char *name, double lambda);
 int     PDQ_CreateOpen_p(char *name, double *lambda);
+// Added by NJG on Sunday, December 30, 2018 for PDQ 7.0
+void CreateOpenWorkload(char *name, double lambdak);
+
 
 // Define a single queueing center in either a closed or open circuit
 //int     PDQ_CreateNode(char *name, int device, int sched);
@@ -192,6 +198,7 @@ void     PDQ_CreateOpenMultiserver(int servers, char *name, int device, int sche
 // Define closed network multiserver FESC queueing device
 // Added  by NJG on Thursday, December 27, 2018 for PDQ v7.0.0
 void     PDQ_CreateClosedMultiserver(int servers, char *name, int device, int sched);
+
 
 //------------------------------------------------------
 // Next 2 functions will be used when current PDQ Create functions become procedures
