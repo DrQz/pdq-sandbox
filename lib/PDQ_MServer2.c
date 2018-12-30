@@ -74,13 +74,11 @@ double ErlangR(double arrivrate, double servtime, int servers) {
 
 
 
-// Updated by NJG on Thursday, December 27, 2018
-extern double     sm_x[MAX_USERS + 1]; // global submodel thruput
-// in PDQ_Globals.c
+// Added by NJG on Thursday, December 27, 2018
+extern double sm_x[MAX_USERS + 1]; //declared in PDQ_Globals.c
 
 
 void MServerFESC(void) {
-// Was void MMmNN(int m, int N, double D, double Z) {
 // Called from exact() in PDQ_Exact.c
 
 	extern int        streams, nodes;
@@ -112,14 +110,14 @@ void MServerFESC(void) {
 	for (c = 0; c < streams; c++) {
 		c_fesc = c;
 		if (c_fesc > 0) {
-			sprintf(s1, "Streams=%d but only single workload allowed with MSC queueing node", c_fesc);
+			sprintf(s1, "Streams=%d but only single workload allowed with MSC node", c_fesc);
 			errmsg(p, s1);
 		}
 	
 		for (k = 0; k < nodes; k++) {
 			k_fesc = k;
 			if (k_fesc > 0) {
-			sprintf(s1, "Node=%d but only single node allowed with MSC queue type", k_fesc);
+			sprintf(s1, "Node=%d but only single node allowed with MSC type", k_fesc);
 			errmsg(p, s1);
 			}
 		}
@@ -131,8 +129,8 @@ void MServerFESC(void) {
     Z = job[c_fesc].term->think;
 
 	if (N > MAX_USERS) {
-        printf("N=%d cannot be greater than %d\n", N, MAX_USERS);
-        exit(-1);		
+        sprintf(s1, "N=%d must not exceed %d\n", N, MAX_USERS);
+        errmsg(p, s1);		
 	}	
 	
 	for (i = 0; i <= N; i++) {
@@ -194,13 +192,13 @@ void MServerFESC(void) {
 	sumR[c_fesc] += node[k_fesc].resit[c_fesc];
 	node[k_fesc].utiliz[c_fesc] = U;
 		
-
 } // end of MServerFESC 
 
 
 void MServers(int pop, int servers, float demand) {
-// Multiple servers are a delay center with no waiting line
-// Called by MServerFESC()
+//Multiple servers are a delay center with no waiting line
+//Called by MServerFESC() in this module
+//Submodel thruput declared in PDQ_Globals.c
 
     int             i;
     

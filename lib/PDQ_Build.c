@@ -279,7 +279,9 @@ void PDQ_CreateNode(char *name, int device, int sched)
 
 
 //-------------------------------------------------------------------------
-// Prototype as defined in Chapter 6 of the "Perl::PDQ" book
+// Function defined in Chapter 6 of the "Perl::PDQ" book
+// PDQ_CreateMultiNode will be deprecated after PDQ 7.0
+// and replaced by PDQ_CreateOpenMultiserver (see next function)
 
 void PDQ_CreateMultiNode(int servers, char *name, int device, int sched)
 {
@@ -345,8 +347,75 @@ void PDQ_CreateMultiNode(int servers, char *name, int device, int sched)
 	
 }  // PDQ_CreateMultiNode
 
+
+// New version of PDQ_CreateMultiNode 
+void PDQ_CreateOpenMultiserver(int servers, char *name, int device, int sched)
+{
+	extern NODE_TYPE *node;
+	extern char     s1[], s2[];
+	extern int      nodes;
+	extern int      PDQ_DEBUG;
+    
+	char           *p = "PDQ_CreateOpenMultiserver";
+
+	FILE*			out_fd;
+
+	if (PDQ_DEBUG)
+	{
+		debug(p, "Entering");
+		out_fd = fopen("PDQ.out", "a");
+		fprintf(out_fd, "name : %s  device : %d  sched : %d\n", name, device, sched);
+		//The following should really be fclose
+		//		close(out_fd);
+		fclose(out_fd);
+	}
+
+	if (k > MAXNODES) {
+		sprintf(s1, "Allocating \"%s\" exceeds %d max nodes",
+			name, MAXNODES);
+		errmsg(p, s1);
+	}
+
+	if (strlen(name) >= MAXCHARS) {
+		sprintf(s1, "Nodename \"%s\" is longer than %d characters",
+			name, MAXCHARS);
+		errmsg(p, s1);
+	}
+
+	strcpy(node[k].devname, name);
+
+	
+	if (servers <= 0) { 
+		// number of servers must be positive integer
+		sprintf(s1, "Must specify a positive number of servers");
+		errmsg(p, s1);
+	} 
+	
+	
+	node[k].devtype = device;
+	node[k].sched   = sched;
+	node[k].servers = servers; // Added by NJG on Dec 29, 2018
+
+	if (PDQ_DEBUG) {
+		typetostr(s1, node[k].devtype);
+		typetostr(s2, node[k].sched);
+		PRINTF("\tNode[%d]: %s %s \"%s\"\n",
+		  k, s1, s2, node[k].devname);
+		resets(s1);
+		resets(s2);
+	};
+
+	if (PDQ_DEBUG)
+		debug(p, "Exiting");
+
+    // update global node count
+	k = ++nodes;
+	
+}  // end of PDQ_CreateOpenMultiserver
+
+
 //-------------------------------------------------------------------------
-// Prototype for M/M/m/N/N FESC node
+// Function for M/M/m/N/N FESC node
 // Added by NJG on Thursday, December 27, 2018
 
 void     PDQ_CreateClosedMultiserver(int servers, char *name, int device, int sched) {

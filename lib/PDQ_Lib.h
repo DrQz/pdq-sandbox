@@ -183,9 +183,11 @@ void     PDQ_CreateNode(char *name, int device, int sched);
 // Define open network multiserver MSQ queueing device
 // Prototype as defined in Chapter 6 of the "Perl::PDQ" book
 // New in PDQ 5.0. Added by NJG on Wed Feb 25, 2009
+// Will be deprecated beyond PDQ 7.0
 void     PDQ_CreateMultiNode(int servers, char *name, int device, int sched);
-// Renamed in PDQ 7.0
-//void     PDQ_CreateOpenMultiserver(int servers, char *name, int device, int sched);
+// Alternative defined in PDQ 7.0
+void     PDQ_CreateOpenMultiserver(int servers, char *name, int device, int sched);
+
 
 // Define closed network multiserver FESC queueing device
 // Added  by NJG on Thursday, December 27, 2018 for PDQ v7.0.0
