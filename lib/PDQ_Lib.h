@@ -35,6 +35,7 @@
 // The following string constant is read by the GetVersion and Report()
 // Updated by NJG on Tuesday, May 24, 2016 from string literal to #define constant
 // thereby suppressing compiler warnings.
+//
 // Modifying the order of TYPE fields ramifies into PDQ_Utils.c TYPE_TABLE
 // Must not contain more than 26 characters for Report() header.
 
@@ -85,7 +86,7 @@
 #define EXACT  14		// for moderate TERM workloads
 #define APPROX 15		// for large TERM workloads
 #define CANON  16		// for TRANS workloads
-#define APPROXMSQ 17	// multiclass MSO workloads (NJG on May 8, 2016)
+#define APXMSO 17	// multiclass MSO workloads (NJG on May 8, 2016)
 
 // Service time and Demand types
 #define VISITS 18

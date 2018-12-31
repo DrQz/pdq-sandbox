@@ -76,7 +76,7 @@ TYPE_TABLE
 		{"CEN",     CEN},
 		{"DLY",     DLY},
 		{"MSO",     MSO},  //Edited by NJG on Saturday, December 29, 2018 (was MSQ)
-     /* {"FESC",    FESC}, Edited by NJG for M/M/n/N/N FESC on Dec 16, 2018 */
+     /* {"FESC",    FESC}, Removed by NJG for M/M/n/N/N FESC on Dec 16, 2018 */
 		{"MSC",     MSC},  //Added by NJG on Saturday, December 29, 2018
 		{"ISRV",    ISRV},
 		{"FCFS",    FCFS},
@@ -88,7 +88,7 @@ TYPE_TABLE
 		{"EXACT",   EXACT},
 		{"APPROX",  APPROX},
 		{"CANON",   CANON},
-        {"APPROXMSQ", APPROXMSQ},
+        {"APXMSO",  APXMSO},
 		{"VISITS",  VISITS},
 		{"DEMAND",  DEMAND},
 		{"SP",      PDQ_SP},
