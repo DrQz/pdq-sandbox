@@ -71,7 +71,7 @@ int main(int argc, char *argv[]) {
 	glob_Z = think;
 	//test_CreateClosed("Requests", TERM, requests, think);
 
-	PDQ_CreateClosedMultiserver(350, "cloudFESC", MSC, FCFS); 
+	PDQ_CreateMultiserverClosed(350, "cloudFESC", MSC, FCFS); 
 	//test_CreateClosedMultiserver(350, "cloudFESC", CEN, FCFS);
 
     PDQ_SetDemand("cloudFESC", "Requests", stime); 

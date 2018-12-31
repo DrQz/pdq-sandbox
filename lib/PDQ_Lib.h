@@ -172,7 +172,7 @@ typedef struct {
 void     PDQ_CreateClosed(char *name, int should_be_class, double pop, double think);
 int     PDQ_CreateClosed_p(char *name, int should_be_class, double *pop, double *think);
 // Added by NJG on Sunday, December 30, 2018 for PDQ 7.0
-void CreateClosedWorkload(char *name, int should_be_class, double pop, double think);
+void PDQ_CreateWorkloadClosed(char *name, int should_be_class, double pop, double think);
 
 
 // Define the workload in an open-circuit queueing * model.
@@ -180,25 +180,25 @@ void CreateClosedWorkload(char *name, int should_be_class, double pop, double th
 void     PDQ_CreateOpen(char *name, double lambda);
 int     PDQ_CreateOpen_p(char *name, double *lambda);
 // Added by NJG on Sunday, December 30, 2018 for PDQ 7.0
-void CreateOpenWorkload(char *name, double lambdak);
+void PDQ_CreateWorkloadOpen(char *name, double lambdak);
 
 
 // Define a single queueing center in either a closed or open circuit
-//int     PDQ_CreateNode(char *name, int device, int sched);
-void     PDQ_CreateNode(char *name, int device, int sched);
+//int PDQ_CreateNode(char *name, int device, int sched);
+void PDQ_CreateNode(char *name, int device, int sched);
 
 // Define open network multiserver MSQ queueing device
 // Prototype as defined in Chapter 6 of the "Perl::PDQ" book
 // New in PDQ 5.0. Added by NJG on Wed Feb 25, 2009
 // Will be deprecated beyond PDQ 7.0
-void     PDQ_CreateMultiNode(int servers, char *name, int device, int sched);
+void PDQ_CreateMultiNode(int servers, char *name, int device, int sched);
 // Alternative defined in PDQ 7.0
-void     PDQ_CreateOpenMultiserver(int servers, char *name, int device, int sched);
+void PDQ_CreateMultiserverOpen(int servers, char *name, int device, int sched);
 
 
 // Define closed network multiserver FESC queueing device
 // Added  by NJG on Thursday, December 27, 2018 for PDQ v7.0.0
-void     PDQ_CreateClosedMultiserver(int servers, char *name, int device, int sched);
+void PDQ_CreateMultiserverClosed(int servers, char *name, int device, int sched);
 
 
 //------------------------------------------------------

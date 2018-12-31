@@ -1,7 +1,7 @@
 // mmm-new-name.c
 // Created by NJG on Saturday, December 29, 2018
 //
-// Test calling new PDQ_CreateOpenMultiserver() function
+// Test calling new PDQ_CreateMultiserverOpen() function
 //
 // Check resource queue length == number in PDQ_Report()
  
@@ -18,7 +18,7 @@ int main() {
     PDQ_Init("Bank Model");
     PDQ_CreateOpen("Customers", aRate);
     
-	PDQ_CreateOpenMultiserver(4, "Tellers", MSO, FCFS);
+	PDQ_CreateMultiserverOpen(4, "Tellers", MSO, FCFS);
     PDQ_SetDemand("Tellers", "Customers", sTime);
     
     PDQ_SetWUnit("Customers");

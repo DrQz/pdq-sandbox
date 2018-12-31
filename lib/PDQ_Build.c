@@ -291,23 +291,23 @@ void PDQ_CreateNode(char *name, int device, int sched)
 
 void PDQ_CreateMultiNode(int servers, char *name, int device, int sched)
 {
-	void PDQ_CreateOpenMultiserver(int servers, char *name, int device, int sched);
+	void PDQ_CreateMultiserverOpen(int servers, char *name, int device, int sched);
 	
-	PDQ_CreateOpenMultiserver(servers, name, device, sched);
+	PDQ_CreateMultiserverOpen(servers, name, device, sched);
 
 }  // PDQ_CreateMultiNode
 
 
 
 // New version of PDQ_CreateMultiNode for PDQ 7.0 December 2018
-void PDQ_CreateOpenMultiserver(int servers, char *name, int device, int sched)
+void PDQ_CreateMultiserverOpen(int servers, char *name, int device, int sched)
 {
 	extern NODE_TYPE *node;
 	extern char     s1[], s2[];
 	extern int      nodes;
 	extern int      PDQ_DEBUG;
     
-	char           *p = "PDQ_CreateOpenMultiserver";
+	char           *p = "PDQ_CreateMultiserverOpen";
 
 	FILE*			out_fd;
 
@@ -362,14 +362,14 @@ void PDQ_CreateOpenMultiserver(int servers, char *name, int device, int sched)
     // update global node count
 	k = ++nodes;
 	
-}  // end of PDQ_CreateOpenMultiserver
+}  // end of PDQ_CreateMultiserverOpen
 
 
 //-------------------------------------------------------------------------
 // Function for M/M/m/N/N FESC node
 // Added by NJG on Thursday, December 27, 2018
 
-void     PDQ_CreateClosedMultiserver(int servers, char *name, int device, int sched) {
+void PDQ_CreateMultiserverClosed(int servers, char *name, int device, int sched) {
 	
 	extern NODE_TYPE *node;
 	extern char     s1[], s2[];
@@ -378,7 +378,7 @@ void     PDQ_CreateClosedMultiserver(int servers, char *name, int device, int sc
 	
 	FILE*			out_fd;
     
-	char           *p = "PDQ_CreateClosedMultiserver";
+	char           *p = "PDQ_CreateMultiserverClosed";
     
     // hack to force FESC node type
 	//sched = FESC; 
@@ -438,14 +438,13 @@ void     PDQ_CreateClosedMultiserver(int servers, char *name, int device, int sc
     // update global node count
 	k = ++nodes;
 	
-
-} // PDQ_CreateClosedMultiserver
+} // PDQ_CreateMultiserverClosed
 
 //-------------------------------------------------------------------------
 
 // New for PDQ 7.0 - placeholder for now
 // Added by NJG on Sunday, December 30, 2018
-void CreateClosedWorkload(char *name, int should_be_class, double pop, double think)
+void PDQ_CreateWorkloadClosed(char *name, int should_be_class, double pop, double think)
 {
     int dump; //no longer return integer stream count this way
     dump = PDQ_CreateClosed_p(name, should_be_class, &pop, &think);
@@ -538,7 +537,7 @@ int PDQ_CreateClosed_p(char *name, int should_be_class, double *pop, double *thi
 
 // New for PDQ 7.0 - placeholder for now
 // Added by NJG on Sunday, December 30, 2018
-void CreateOpenWorkload(char *name, double lambdak)
+void PDQ_CreateWorkloadOpen(char *name, double lambdak)
 {
     int dump; //no longer return integer stream count this way
     dump = PDQ_CreateOpen_p(name, &lambdak);
