@@ -39,7 +39,7 @@
 // Modifying the order of TYPE fields ramifies into PDQ_Utils.c TYPE_TABLE
 // Must not contain more than 26 characters for Report() header.
 
-#define PDQ_VERSION    "Version 7.0.0 Build 123018"
+#define PDQ_VERSION    "Version 7.0.0 Build 123118"
 
 
 //---- TYPES --------------------------------------------------------------
@@ -213,7 +213,8 @@ int		PDQ_GetNodesCount();
 //------------------------------------------------------
 
 
-double  PDQ_GetResponse(int should_be_class, char *wname);
+//Changed by NIG on Monday, December 31, 2018
+double  PDQ_GetResponseTime(int should_be_class, char *wname);
 // Returns the system response time for the specified workload
 
 double  PDQ_GetResidenceTime(char *device, char *work, int should_be_class);
@@ -222,7 +223,8 @@ double  PDQ_GetResidenceTime(char *device, char *work, int should_be_class);
 double  PDQ_GetThruput(int should_be_class, char *wname);
 // Returns the system throughput for the specified workload
 
-double  PDQ_GetLoadOpt(int should_be_class, char *wname);
+//Changed by NIG on Monday, December 31, 2018
+double  PDQ_GetOptimalLoad(int should_be_class, char *wname);
 // Returns the optimal user load for the specified workload
 
 double  PDQ_GetUtilization(char *device, char *work, int should_be_class);
@@ -233,7 +235,8 @@ double  PDQ_GetQueueLength(char *device, char *work, int should_be_class);
 // Returns the queue length at the designated queueing node due to the
 // specified workload.
 
-double  PDQ_GetThruMax(int should_be_class, char *wname);
+//Changed by NIG on Monday, December 31, 2018
+double  PDQ_GetThruputMax(int should_be_class, char *wname);
 // Return the maximum available throughput
 
 //double PDQ_GetTotalDemand(int should_be_class, char *wname);

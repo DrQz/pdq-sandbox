@@ -28,6 +28,10 @@
  * Updated by NJG on Wed, August 19, 2015         Use PRINTF from PDQ_Lib.h for R
  * Updated by NJG on Sunday, December 16, 2018    TYPE_TABLE for M/M/n/N/N FESC node
  * Updated by NJG on Saturday, December 29, 2018  New MSO, MSC multi-server devtypes
+ * Updated by NJG on Monday, December 31, 2018    Changed following function names:
+ *													+ GetResponseTime
+ *													+ PDQ_GetThruputMax
+ *													+ PDQ_GetOptimalLoad
  *
  */
 
@@ -136,7 +140,7 @@ PDQ_GetNodesCount()
 
 
 double
-PDQ_GetResponse(int should_be_class, char *wname)
+PDQ_GetResponseTime(int should_be_class, char *wname)
 {
 	char           *p = "PDQ_GetResponse()";
 	double          r = 0.0;
@@ -174,7 +178,8 @@ PDQ_GetResponse(int should_be_class, char *wname)
 	}
 	
 	return (r);
-}  /* PDQ_GetResponse */
+	
+}  // PDQ_GetResponseTime 
 
 //-------------------------------------------------------------------------
 
@@ -220,11 +225,10 @@ PDQ_GetThruput(int should_be_class, char *wname)
 
 //-------------------------------------------------------------------------
 
-double
-PDQ_GetThruMax(int should_be_class, char *wname)
+double PDQ_GetThruputMax(int should_be_class, char *wname)
 {
-	char           *p = "PDQ_GetThruMax()";
-	double          x = 0.0;
+	char    *p = "PDQ_GetThruMax()";
+	double   x = 0.0;
     int     job_index = getjob_index(wname);
 
 	// Added by NJG on Wednesday, August 19, 2015
@@ -258,12 +262,13 @@ PDQ_GetThruMax(int should_be_class, char *wname)
 	}
 
 	return (x);
-}  /* PDQ_GetThruMax */
+	
+}  /* PDQ_GetThruputMax */
 
 //-------------------------------------------------------------------------
 
 double
-PDQ_GetLoadOpt(int should_be_class, char *wname)
+PDQ_GetOptimalLoad(int should_be_class, char *wname)
 {
 	char           *p = "PDQ_GetLoadOpt()";
 	// Edited by NJG on Tuesday, August 18, 2015
@@ -317,7 +322,7 @@ PDQ_GetLoadOpt(int should_be_class, char *wname)
 		
 	return (Nopt);
 	
-}  /* PDQ_GetLoadOpt */
+}  /* PDQ_GetOptimalLoad */
 
 //-------------------------------------------------------------------------
 
