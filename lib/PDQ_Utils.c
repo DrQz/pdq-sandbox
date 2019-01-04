@@ -138,9 +138,8 @@ PDQ_GetNodesCount()
 
 //-------------------------------------------------------------------------
 
-
-double
-PDQ_GetResponseTime(int should_be_class, char *wname)
+//Changed by NIG on Monday, December 31, 2018
+double PDQ_GetResponseTime(int should_be_class, char *wname)
 {
 	char           *p = "PDQ_GetResponse()";
 	double          r = 0.0;
@@ -225,6 +224,7 @@ PDQ_GetThruput(int should_be_class, char *wname)
 
 //-------------------------------------------------------------------------
 
+//Changed by NIG on Monday, December 31, 2018
 double PDQ_GetThruputMax(int should_be_class, char *wname)
 {
 	char    *p = "PDQ_GetThruMax()";
@@ -267,8 +267,8 @@ double PDQ_GetThruputMax(int should_be_class, char *wname)
 
 //-------------------------------------------------------------------------
 
-double
-PDQ_GetOptimalLoad(int should_be_class, char *wname)
+//Changed by NIG on Monday, December 31, 2018
+double PDQ_GetOptimalLoad(int should_be_class, char *wname)
 {
 	char           *p = "PDQ_GetLoadOpt()";
 	// Edited by NJG on Tuesday, August 18, 2015
